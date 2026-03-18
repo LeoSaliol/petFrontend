@@ -1,13 +1,22 @@
 import { useState } from 'react';
-
 import { CommentIcon } from '../icons/CommentIcon';
 import { HeartIcon } from '../icons/LikeIcon';
 import { CatPorfileIcon } from '../icons/CatPorfileIcon';
+import { useAuth } from '../context/useAuth';
 
 export default function PostCard() {
     const [liked, setLiked] = useState(false);
+
+    const { user } = useAuth();
+
     return (
         <div className=" rounded-xl w-full border  border-[#b6a5ad11] mb-6 mt-11">
+            {user ? (
+                <p>Welcome, !</p>
+            ) : (
+                <p>Please log in to view your posts.</p>
+            )}
+
             <div className=" flex items-center p-4 gap-3">
                 {/* <img
                     src={ImgPerfil}

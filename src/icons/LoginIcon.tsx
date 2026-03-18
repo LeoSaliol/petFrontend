@@ -8,7 +8,6 @@ export const LoginIcon = (props: SVGProps<SVGSVGElement>) => (
         {...props}
     >
         <g
-            stroke="#333"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}

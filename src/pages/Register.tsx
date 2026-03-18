@@ -1,37 +1,35 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { EyeIcon, EyeOffIcon } from '../icons/EyeIcon';
-import { loginUser, myPets } from '../api/axios';
-import { useAuth } from '../context/useAuth';
+import { registerUser } from '../api/axios';
+import { toast, Toaster } from 'sonner';
 
-export const Login = () => {
+export const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-    const { refreshUser } = useAuth();
-
-    const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    const registerHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
-
+        const username = data.get('username') as string;
         const email = data.get('email') as string;
         const password = data.get('password') as string;
         try {
-            await loginUser(email, password);
-
-            await refreshUser();
-
-            const pets = await myPets();
-            if (pets.length === 0) {
-                navigate('/pets');
-            } else {
-                navigate('/');
-            }
+            await registerUser(username, email, password);
+            toast.success('Usuario registrado exitosamente');
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+            navigate('/login');
         } catch (error) {
-            console.error('Error logging in user:', error);
+            console.error('Error registering user:', error);
+            toast.error('Error registering user');
         }
+        console.log();
     };
     return (
         <main className="min-h-screen w-[30%]  flex justify-center items-center mx-auto">
+            <Toaster
+                position="top-center"
+                richColors
+            />
             <div className="flex flex-col items-center gap-16 border p-6 rounded-lg h-full w-full shadow-lg bg-[#fab2a918] border-[#b6a5ad5e] ">
                 <Link
                     to="/"
@@ -40,9 +38,17 @@ export const Login = () => {
                     Michigram
                 </Link>
                 <form
-                    className="flex flex-col gap-8 w-[75%] "
-                    onSubmit={loginHandler}
+                    className="flex flex-col gap-7 w-[75%] "
+                    onSubmit={registerHandler}
                 >
+                    <div className="mb-4 ">
+                        <input
+                            name="username"
+                            type="text"
+                            className="w-full border-b border-gray-300 focus:outline-none focus:border-gray-500 py-2"
+                            placeholder="Nombre de usuario"
+                        />
+                    </div>
                     <div className="mb-5 ">
                         <input
                             name="email"
@@ -51,7 +57,7 @@ export const Login = () => {
                             placeholder="Email"
                         />
                     </div>
-                    <div className="mb-5 flex items-center gap-2 w-full border-b border-gray-300  focus:border-gray-500 py-2">
+                    <div className="mb-12 flex items-center gap-2 w-full border-b border-gray-300  focus:border-gray-500 py-2">
                         <input
                             name="password"
                             type={showPassword ? 'text' : 'password'}
@@ -74,15 +80,15 @@ export const Login = () => {
                         type="submit"
                         className="w-full py-2 rounded-full text-white font-semibold bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] hover:opacity-90 transition"
                     >
-                        Login
+                        Regístrate
                     </button>
                     <p className="mx-auto mt-20">
-                        No tienes cuenta?{' '}
+                        ¿Ya tienes cuenta?{' '}
                         <Link
-                            to="/register"
+                            to="/login"
                             className="font-bold"
                         >
-                            Regístrate
+                            Inicia sesión
                         </Link>
                     </p>
                 </form>
@@ -90,3 +96,5 @@ export const Login = () => {
         </main>
     );
 };
+
+export default Register;

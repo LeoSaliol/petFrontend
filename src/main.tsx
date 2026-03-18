@@ -6,24 +6,37 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Login } from './pages/Login.tsx';
 import { Feed } from './pages/Feed.tsx';
 import { Profile } from './pages/Profile.tsx';
+import Register from './pages/Register.tsx';
+import Pet from './pages/Pet.tsx';
+import { AuthProvider } from './context/AuthProvider.tsx';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    path="/"
-                    element={<App children={<Feed />} />}
-                />
-                <Route
-                    path="/login"
-                    element={<App children={<Login />} />}
-                />
-                <Route
-                    path="/profile/:id"
-                    element={<App children={<Profile />} />}
-                />
-            </Routes>
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<App children={<Feed />} />}
+                    />
+                    <Route
+                        path="/login"
+                        element={<Login />}
+                    />
+                    <Route
+                        path="/profile/:id"
+                        element={<App children={<Profile />} />}
+                    />
+                    <Route
+                        path="/register"
+                        element={<Register />}
+                    />
+                    <Route
+                        path="/pets"
+                        element={<App children={<Pet />} />}
+                    />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
     </StrictMode>,
 );
