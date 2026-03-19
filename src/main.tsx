@@ -10,6 +10,9 @@ import Register from './pages/Register.tsx';
 import Pet from './pages/Pet.tsx';
 import { AuthProvider } from './context/AuthProvider.tsx';
 
+import { ProtectedLayout } from './routes/ProtectedLayout.tsx';
+import { CreatePost } from './pages/CreatePost.tsx';
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <AuthProvider>
@@ -31,10 +34,17 @@ createRoot(document.getElementById('root')!).render(
                         path="/register"
                         element={<Register />}
                     />
-                    <Route
-                        path="/pets"
-                        element={<App children={<Pet />} />}
-                    />
+
+                    <Route element={<ProtectedLayout />}>
+                        <Route
+                            path="/create-post"
+                            element={<App children={<CreatePost />} />}
+                        />
+                        <Route
+                            path="/pets"
+                            element={<App children={<Pet />} />}
+                        />
+                    </Route>
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

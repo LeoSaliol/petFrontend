@@ -1,17 +1,20 @@
 import { createContext } from 'react';
+import type { Pet } from '../types';
 
-type User = {
+type UserToken = {
     id: number;
 };
 
 type AuthContextType = {
-    user: User | null;
+    userToken: UserToken | null;
+    pet: Pet | null;
     loading: boolean;
     refreshUser: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType>({
-    user: null,
+    userToken: null,
+    pet: null,
     loading: true,
     refreshUser: async () => {},
 });

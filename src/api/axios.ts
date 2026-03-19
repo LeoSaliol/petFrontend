@@ -14,7 +14,7 @@ export const registerUser = async (
 ) => {
     api.post('/auth/register', { name, email, password })
         .then((response) => {
-            console.log('User registered successfully:', response.data);
+            return response;
         })
         .catch((error) => {
             console.error('Error registering user:', error);
@@ -24,7 +24,7 @@ export const registerUser = async (
 export const loginUser = async (email: string, password: string) => {
     try {
         const response = await api.post('/auth/login', { email, password });
-        console.log('User logged in successfully:', response.data);
+
         return response;
     } catch (error) {
         console.error('Error logging in user:', error);
@@ -71,5 +71,23 @@ export const createPet = async (name: string, bio: string, image: File) => {
         return response;
     } catch (error) {
         console.error('Error creating pet:', error);
+    }
+};
+
+export const createPost = async (
+    petId: number | undefined,
+    content: string,
+    image: File,
+) => {
+    const formData = new FormData();
+    formData.append('content', content);
+    formData.append('image', image);
+    formData.append('petId', petId ? petId.toString() : '');
+    try {
+        const response = await api.post('/posts', formData);
+
+        return response;
+    } catch (error) {
+        console.error('Error creating post:', error);
     }
 };

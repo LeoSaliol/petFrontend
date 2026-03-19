@@ -1,19 +1,25 @@
 import { useEffect, useState } from 'react';
-import type { User } from '../types';
-import { logged } from '../api/axios';
+import type { Pet, User } from '../types';
+import { logged, myPets } from '../api/axios';
 import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [userToken, setUserToken] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [pet, setPet] = useState<Pet | null>(null);
 
     const getUser = async () => {
         try {
             const response = await logged();
-            setUser(response?.data || null);
+            setUserToken(response?.data || null);
+            if (response?.data) {
+                const userData = await myPets();
+                setPet(userData[0]);
+            }
         } catch (error) {
             console.error('Error fetching user data:', error);
-            setUser(null);
+            setUserToken(null);
+            setPet(null);
         }
     };
     useEffect(() => {
@@ -26,7 +32,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return (
         <AuthContext.Provider
             value={{
-                user,
+                userToken,
+                pet,
                 loading,
                 refreshUser: getUser,
             }}

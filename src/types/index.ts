@@ -1,8 +1,11 @@
-export interface Pet {
+export type Pet = {
     id: number;
+    ownerId: number;
+    createdAT: string;
     name: string;
     image: string;
-}
+    bio: string;
+};
 
 export interface Post {
     id: number;
