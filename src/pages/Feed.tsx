@@ -9,8 +9,6 @@ export const Feed = () => {
             {userToken && <CreatePostButton />}
 
             <PostCard />
-            <PostCard />
-            <PostCard />
         </>
     );
 };

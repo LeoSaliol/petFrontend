@@ -15,7 +15,7 @@ export default function Navbar() {
     };
 
     return (
-        <div className=" sticky top-0 z-10">
+        <div className=" sticky top-0 ">
             <div className=" flex justify-between items-center">
                 <Link
                     to="/"
@@ -23,10 +23,7 @@ export default function Navbar() {
                 >
                     Michigram
                 </Link>
-                <p>
-                    Welcome {pet?.name} con el id : {pet?.id} y el user id :{' '}
-                    {userToken?.id}
-                </p>
+
                 <div className="flex gap-5 items-center h-12">
                     <Link to="/">
                         <NotificationIcon

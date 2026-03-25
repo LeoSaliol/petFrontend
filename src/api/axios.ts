@@ -91,3 +91,28 @@ export const createPost = async (
         console.error('Error creating post:', error);
     }
 };
+
+export const getPosts = async () => {
+    try {
+        const response = await api.get('/posts/feed');
+        const post = response.data;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const postWithLikes = post.map((p: any) => ({
+            ...p,
+            liked: p.likes.length > 0,
+        }));
+        return postWithLikes;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
+};
+
+export const toggleLike = async (postId: number, petId: number) => {
+    try {
+        const response = await api.post(`likes/toggle/${postId}`, { petId });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error toggling like:', error);
+    }
+};
