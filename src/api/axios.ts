@@ -116,3 +116,29 @@ export const toggleLike = async (postId: number, petId: number) => {
         console.error('Error toggling like:', error);
     }
 };
+
+export const createComment = async (
+    postId: number,
+    petId: number,
+    content: string,
+) => {
+    try {
+        const response = await api.post(`/comments/${postId}`, {
+            petId,
+            content,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error creating comment:', error);
+    }
+};
+
+export const getComments = async (postId: number) => {
+    try {
+        const response = await api.get(`/comments/${postId}`);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

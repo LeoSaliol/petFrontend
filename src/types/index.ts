@@ -9,14 +9,20 @@ export type Pet = {
 
 export interface Post {
     id: number;
+    content: string;
     image: string;
-    content?: string;
     createdAt: string;
-    pet: Pet;
+    pet: {
+        id: number;
+        name: string;
+        image: string;
+    };
     _count: {
         likes: number;
         comments: number;
     };
+    liked?: boolean;
+    newComment?: string;
 }
 
 export interface User {
