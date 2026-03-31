@@ -1,16 +1,20 @@
+import { useNavigate } from 'react-router-dom';
 import { createPet } from '../api/axios';
 
 const Pet = () => {
+    const navigate = useNavigate();
     const petSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const namepet = formData.get('name') as string;
         const bio = formData.get('bio') as string;
         const image = formData.get('image') as File;
-        console.log(namepet, bio, image);
+
         try {
             const response = await createPet(namepet, bio, image);
-            console.log(response);
+            if (response?.status === 201) {
+                navigate('/');
+            }
         } catch (error) {
             console.error('Error creating pet:', error);
         }

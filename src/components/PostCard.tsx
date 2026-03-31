@@ -7,7 +7,7 @@ import { useAuth } from '../context/useAuth';
 
 import { CommentModal } from './CommentModal';
 import type { Post } from '../types';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Perfil {
     id: number;
@@ -16,6 +16,7 @@ interface Perfil {
     content: string;
     postId: number;
     postImg: string;
+    createdAt: string;
 }
 
 export default function PostCard({
@@ -31,6 +32,7 @@ export default function PostCard({
         petId: number,
     ) => void;
 }) {
+    // console.log(post, 'Post Card');
     const [openModal, setOpenModal] = useState<boolean | null>(false);
     const [selectedPostId, setSelectedPostId] = useState<Perfil | null>(null);
     const navigate = useNavigate();
@@ -44,6 +46,7 @@ export default function PostCard({
         setOpenModal(true);
         setSelectedPostId(post);
     };
+
     return (
         <>
             {openModal && userToken && (
@@ -56,13 +59,17 @@ export default function PostCard({
                 key={post.id}
                 className=" rounded-xl w-full border  border-[#b6a5ad11] mb-6 mt-11"
             >
-                <div className=" flex items-center  p-4 gap-3">
-                    <img
-                        src={post.pet.image}
-                        alt={post.pet.name}
-                        className="w-10 h-10 rounded-full mx-3 object-cover"
-                    />
-                    <span className="font-content ">{post.pet.name} </span>
+                <div className=" flex items-center  p-4 gap-1">
+                    <Link to={`/profile/${post.pet.id}`}>
+                        <img
+                            src={post.pet.image}
+                            alt={post.pet.name}
+                            className="w-10 h-10 rounded-full mx-3 object-cover"
+                        />
+                    </Link>
+                    <Link to={`/profile/${post.pet.id}`}>
+                        <span className="font-content ">{post.pet.name} </span>
+                    </Link>
                     <span className="text-xs text-[#a58e99] ml-auto">
                         {timeAgoShort(post.createdAt)}
                     </span>
@@ -80,11 +87,10 @@ export default function PostCard({
                             className="flex items-center gap-1  "
                             onClick={() => handleLike(post.id, post.pet.id)}
                         >
-                            {}
                             <HeartIcon
                                 className="w-7 h-7 cursor-pointer "
-                                stroke={post.liked ? '#ED6B86' : '#000'}
-                                fill={post.liked ? '#ED6B86' : 'none'}
+                                stroke={post.likedByUser ? '#ED6B86' : '#000'}
+                                fill={post.likedByUser ? '#ED6B86' : 'none'}
                             />
 
                             <span>{post._count.likes}</span>
@@ -101,6 +107,7 @@ export default function PostCard({
                                         content: post.content,
                                         postId: post.id,
                                         postImg: post.image,
+                                        createdAt: post.createdAt,
                                     })
                                 }
                             />
@@ -109,8 +116,11 @@ export default function PostCard({
                     </div>
 
                     <div className="text-lg flex gap-2 items-center">
-                        {' '}
-                        <p className=" font-semibold">{post.pet.name}</p>{' '}
+                        <Link to={`/profile/${post.pet.id}`}>
+                            <span className="font-semibold">
+                                {post.pet.name}
+                            </span>
+                        </Link>
                         <p>{post.content}</p>
                     </div>
                     {post.newComment && (

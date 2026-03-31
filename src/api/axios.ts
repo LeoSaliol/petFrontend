@@ -12,20 +12,27 @@ export const registerUser = async (
     email: string,
     password: string,
 ) => {
-    api.post('/auth/register', { name, email, password })
-        .then((response) => {
-            return response;
-        })
-        .catch((error) => {
-            console.error('Error registering user:', error);
+    try {
+        const response = await api.post('/auth/register', {
+            name,
+            email,
+            password,
         });
+        return response.data;
+    } catch (error) {
+        console.error('Error registering user:', error);
+        throw error;
+    }
 };
 
 export const loginUser = async (email: string, password: string) => {
     try {
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.post('/auth/login', {
+            email,
+            password,
+        });
 
-        return response;
+        return response.data;
     } catch (error) {
         console.error('Error logging in user:', error);
     }
@@ -44,7 +51,7 @@ export const logoutUser = async () => {
 export const logged = async () => {
     try {
         const response = await api.get('/me');
-        return response;
+        return response.data.user.id;
     } catch (error) {
         console.error('Error checking logged status:', error);
     }
@@ -67,7 +74,7 @@ export const createPet = async (name: string, bio: string, image: File) => {
     formData.append('image', image);
     try {
         const response = await api.post('/pets', formData);
-        console.log(response);
+
         return response;
     } catch (error) {
         console.error('Error creating pet:', error);
@@ -95,22 +102,16 @@ export const createPost = async (
 export const getPosts = async () => {
     try {
         const response = await api.get('/posts/feed');
-        const post = response.data;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const postWithLikes = post.map((p: any) => ({
-            ...p,
-            liked: p.likes.length > 0,
-        }));
-        return postWithLikes;
+        console.log(response.data);
+        return response.data;
     } catch (error) {
         console.error('Error fetching posts:', error);
     }
 };
 
-export const toggleLike = async (postId: number, petId: number) => {
+export const toggleLike = async (postId: number) => {
     try {
-        const response = await api.post(`likes/toggle/${postId}`, { petId });
-
+        const response = await api.post(`likes/toggle/${postId}`);
         return response.data;
     } catch (error) {
         console.error('Error toggling like:', error);
@@ -140,5 +141,17 @@ export const getComments = async (postId: number) => {
         return response.data;
     } catch (error) {
         console.log(error);
+    }
+};
+
+export const getPerfil = async (petId: number) => {
+    try {
+        const response = await api.get(`/users/${petId}/profile`, {
+            withCredentials: false,
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching profile data:', error);
     }
 };

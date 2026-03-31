@@ -19,32 +19,26 @@ export const Feed = () => {
     }, []);
 
     const handleLike = async (postId: number, petId: number) => {
-        if (userToken) {
-            setPosts((prevPosts) =>
-                prevPosts.map((post) => {
-                    if (post.id === postId) {
-                        return {
-                            ...post,
-                            liked: !post.liked,
-                            _count: {
-                                ...post._count,
-                                likes: post.liked
-                                    ? post._count.likes - 1
-                                    : post._count.likes + 1,
-                            },
-                        };
-                    }
-                    return post;
-                }),
-            );
-
-            try {
-                await toggleLike(postId, petId);
-            } catch (error) {
-                console.error('Error toggling like:', error);
+        try {
+            if (userToken) {
+                await toggleLike(petId);
+                // setPosts((prevPosts) => {
+                //     return prevPosts.map((post) => {
+                //         if (post.id === postId) {
+                //             const liked = !post.likedByUser;
+                //             return {
+                //                 ...post,
+                //                 likedByUser: liked,
+                //             };
+                //         }
+                //         return post;
+                //     });
+                // });
+            } else {
+                navigate('/login');
             }
-        } else {
-            navigate('/login');
+        } catch (error) {
+            console.error('Error toggling like:', error);
         }
     };
     const handleComment = async (

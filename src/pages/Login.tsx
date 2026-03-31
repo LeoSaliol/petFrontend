@@ -11,6 +11,7 @@ export const Login = () => {
 
     const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         const data = new FormData(e.currentTarget);
 
         const email = data.get('email') as string;

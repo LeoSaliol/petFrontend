@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { createComment, getComments } from '../api/axios';
 import { timeAgoShort } from '../utils/time';
 import { useAuth } from '../context/useAuth';
+import { Link, useLocation } from 'react-router-dom';
 
 interface Comment {
     id: number;
@@ -24,6 +25,7 @@ interface Perfil {
     content: string;
     postId: number;
     postImg: string;
+    createdAt: string;
 }
 
 export const CommentModal = ({
@@ -34,9 +36,10 @@ export const CommentModal = ({
     closeModal: () => void;
 }) => {
     const [comments, setComments] = useState<Comment[]>([]);
+    const location = useLocation();
     useEffect(() => {
         const fetchComments = async () => {
-            const commentsData = await getComments(pcomment?.postId ?? 0);
+            const commentsData = await getComments(pcomment!.postId);
             setComments(commentsData);
         };
         fetchComments();
@@ -44,10 +47,13 @@ export const CommentModal = ({
             if (e.key === 'Escape') closeModal();
         };
         window.addEventListener('keydown', handleEsc);
+        if (location.pathname !== `/profile/${pcomment?.id}`) {
+            closeModal();
+        }
         return () => {
             window.removeEventListener('keydown', handleEsc);
         };
-    }, [pcomment, closeModal]);
+    }, [pcomment, closeModal, location.pathname]);
 
     const { pet } = useAuth();
 
@@ -103,18 +109,25 @@ export const CommentModal = ({
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex gap-3 items-center">
-                        <img
-                            src={pcomment?.image}
-                            alt={pcomment?.name}
-                            className="w-12 h-12 rounded-full object-cover"
-                        />
-                        <p className="font-semibold text-lg">
-                            {pcomment?.name}
-                        </p>
-                        <span className="ml-auto">1hr</span>
+                        <Link to={`/profile/${pcomment?.id}`}>
+                            <img
+                                src={pcomment?.image}
+                                alt={pcomment?.name}
+                                className="w-12 h-12 rounded-full object-cover"
+                            />
+                        </Link>
+                        <Link to={`/profile/${pcomment?.id}`}>
+                            <p className="font-semibold text-lg">
+                                {pcomment?.name}
+                            </p>
+                        </Link>
+                        <span className="ml-auto">
+                            {' '}
+                            {timeAgoShort(pcomment!.createdAt)}{' '}
+                        </span>
                     </div>
 
-                    <p className="mx-6 pl-8 text-sm font-light -mt-1">
+                    <p className="mx-6 pl-9 text-sm font-light -mt-2">
                         {pcomment?.content}
                     </p>
                     <div className="flex-1 overflow-y-auto  custom-scrollbar mt-4 pr-2">
@@ -124,16 +137,21 @@ export const CommentModal = ({
                                     key={comment.id}
                                     className="flex items-center gap-3 mt-4"
                                 >
-                                    <img
-                                        src={comment.pet.image}
-                                        alt={comment.pet.name}
-                                        className="self-start w-10 h-10 rounded-full object-cover"
-                                    />
+                                    <Link to={`/profile/${comment.pet.id}`}>
+                                        <img
+                                            src={comment.pet.image}
+                                            alt={comment.pet.name}
+                                            className="self-start w-10 h-10 rounded-full object-cover"
+                                        />
+                                    </Link>
 
                                     <p className="text-sm flex-1 ">
-                                        <span className="font-bold">
+                                        <Link
+                                            to={`/profile/${comment.pet.id}`}
+                                            className="font-bold"
+                                        >
                                             {comment.pet.name}
-                                        </span>{' '}
+                                        </Link>{' '}
                                         {comment.content}
                                     </p>
                                     <p className="text-sm  text-gray-500">
@@ -156,8 +174,9 @@ export const CommentModal = ({
                         <input
                             type="text"
                             placeholder="Escribe un comentario..."
-                            className="bg-transparent border border-[#b6a5ad28] focus:outline-none focus:ring-1 focus:ring-[#5f59596e] w-full  px-3 py-3 text-sm "
+                            className={`bg-transparent border border-[#b6a5ad28] focus:outline-none focus:ring-1 focus:ring-[#5f59596e] w-full  px-3 py-3 text-sm ${!pet ? 'opacity-70 cursor-not-allowed' : ''} `}
                             name="comment"
+                            disabled={!pet}
                         />
                     </form>
                 </div>

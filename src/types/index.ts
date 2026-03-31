@@ -12,6 +12,7 @@ export interface Post {
     content: string;
     image: string;
     createdAt: string;
+    likes: number[];
     pet: {
         id: number;
         name: string;
@@ -21,7 +22,7 @@ export interface Post {
         likes: number;
         comments: number;
     };
-    liked?: boolean;
+    likedByUser?: boolean;
     newComment?: string;
 }
 

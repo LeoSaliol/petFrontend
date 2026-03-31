@@ -1,12 +1,8 @@
 import { createContext } from 'react';
 import type { Pet } from '../types';
 
-type UserToken = {
-    id: number;
-};
-
 type AuthContextType = {
-    userToken: UserToken | null;
+    userToken: number | null;
     pet: Pet | null;
     loading: boolean;
     refreshUser: () => Promise<void>;

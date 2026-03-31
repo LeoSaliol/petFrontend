@@ -31,7 +31,11 @@ export default function Navbar() {
                 >
                     Michigram
                 </Link>
-
+                {pet && (
+                    <p>
+                        {pet.name}:{pet.id}
+                    </p>
+                )}
                 <div
                     className={
                         'flex gap-5 items-center h-12 transition-all duration-700 ease-in-out  ' +
@@ -46,7 +50,7 @@ export default function Navbar() {
                             className="pt-1"
                         />
                     </Link>
-                    <Link to="/profile/60">
+                    <Link to={`/profile/${pet?.id}  `}>
                         {userToken ? (
                             <img
                                 src={pet?.image}
