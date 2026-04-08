@@ -12,41 +12,44 @@ import { AuthProvider } from './context/AuthProvider.tsx';
 
 import { ProtectedLayout } from './routes/ProtectedLayout.tsx';
 import { CreatePost } from './pages/CreatePost.tsx';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <AuthProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<App children={<Feed />} />}
-                    />
-                    <Route
-                        path="/login"
-                        element={<Login />}
-                    />
-                    <Route
-                        path="/profile/:id"
-                        element={<App children={<Profile />} />}
-                    />
-                    <Route
-                        path="/register"
-                        element={<Register />}
-                    />
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={<App children={<Feed />} />}
+                        />
+                        <Route
+                            path="/login"
+                            element={<Login />}
+                        />
+                        <Route
+                            path="/profile/:id"
+                            element={<App children={<Profile />} />}
+                        />
+                        <Route
+                            path="/register"
+                            element={<Register />}
+                        />
 
-                    <Route element={<ProtectedLayout />}>
-                        <Route
-                            path="/create-post"
-                            element={<App children={<CreatePost />} />}
-                        />
-                        <Route
-                            path="/pets"
-                            element={<App children={<Pet />} />}
-                        />
-                    </Route>
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
+                        <Route element={<ProtectedLayout />}>
+                            <Route
+                                path="/create-post"
+                                element={<App children={<CreatePost />} />}
+                            />
+                            <Route
+                                path="/pets"
+                                element={<App children={<Pet />} />}
+                            />
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
+            </AuthProvider>
+        </QueryClientProvider>
     </StrictMode>,
 );

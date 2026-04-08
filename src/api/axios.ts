@@ -7,6 +7,19 @@ const api = axios.create({
 
 export default api;
 
+export const getFeed = async (petId: number | undefined) => {
+    try {
+        const response = await api.get('/posts/feed', {
+            params: {
+                petId,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching feed:', error);
+    }
+};
+
 export const registerUser = async (
     name: string,
     email: string,
@@ -51,9 +64,11 @@ export const logoutUser = async () => {
 export const logged = async () => {
     try {
         const response = await api.get('/me');
-        return response.data.user.id;
+
+        return response.data.petId ?? null;
     } catch (error) {
         console.error('Error checking logged status:', error);
+        return null;
     }
 };
 
@@ -64,6 +79,7 @@ export const myPets = async () => {
         return response.data;
     } catch (error) {
         console.error('Error fetching pets:', error);
+        return [];
     }
 };
 
@@ -96,16 +112,6 @@ export const createPost = async (
         return response;
     } catch (error) {
         console.error('Error creating post:', error);
-    }
-};
-
-export const getPosts = async () => {
-    try {
-        const response = await api.get('/posts/feed');
-        console.log(response.data);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
     }
 };
 
@@ -144,14 +150,109 @@ export const getComments = async (postId: number) => {
     }
 };
 
-export const getPerfil = async (petId: number) => {
+export const getPerfil = async (petId: number, userId?: number) => {
     try {
         const response = await api.get(`/users/${petId}/profile`, {
             withCredentials: false,
+            params: {
+                userId,
+            },
         });
 
         return response.data;
     } catch (error) {
         console.error('Error fetching profile data:', error);
+    }
+};
+
+export const followPet = async (petId: number) => {
+    try {
+        const response = await api.post(`/follow/${petId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error('Error following pet:', error);
+    }
+};
+
+export const getPost = async (postId: number) => {
+    try {
+        const response = await api.get(`/posts/${postId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching post:', error);
+    }
+};
+
+export const deletePost = async (postId: number) => {
+    try {
+        const response = await api.delete(`/posts/${postId}`);
+
+        return response.data.message;
+    } catch (error) {
+        console.error('Error deleting post:', error);
+    }
+};
+export const updatePost = async (
+    postId: number,
+    content: string,
+    image: File,
+) => {
+    const formData = new FormData();
+    formData.append('content', content);
+    if (image) {
+        formData.append('image', image);
+    }
+    try {
+        const response = await api.put(`/posts/${postId}`, formData);
+        console.log(response);
+        return response.status;
+    } catch (error) {
+        console.error('Error updating post:', error);
+    }
+};
+
+export const updatePet = async (
+    name: string,
+    bio: string,
+    image: File | null,
+    petId: number,
+) => {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('bio', bio);
+    if (image) {
+        formData.append('image', image);
+    }
+
+    try {
+        const response = await api.put(`/users/${petId}`, formData);
+        return response.status;
+    } catch (error) {
+        console.error('Error updating pet:', error);
+    }
+};
+
+export const getNotifications = async (petId: number, limit: number) => {
+    try {
+        const response = await api.get(`/notifications/${petId}`, {
+            params: { limit },
+        });
+
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+};
+
+export const markAsRead = async (notificationId: string) => {
+    try {
+        const response = await api.patch(
+            `/notifications/${notificationId}/read`,
+        );
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
     }
 };

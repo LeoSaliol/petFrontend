@@ -25,12 +25,12 @@ export const Register = () => {
         console.log();
     };
     return (
-        <main className="min-h-screen w-[30%]  flex justify-center items-center mx-auto">
+        <main className="min-h-screen w-full  flex justify-center items-center mx-auto dark:bg-primaryText dark:text-background">
             <Toaster
                 position="top-center"
                 richColors
             />
-            <div className="flex flex-col items-center gap-16 border p-6 rounded-lg h-full w-full shadow-lg bg-[#fab2a918] border-[#b6a5ad5e] ">
+            <div className="flex flex-col items-center gap-16 border px-5 py-18 rounded-lg h-full w-[34%] shadow-lg bg-[#fab2a918] dark:bg-primaryText border-[#b6a5ad5e] dark:border-[#ee73ac27]  ">
                 <Link
                     to="/"
                     className="font-title text-[2.5rem] text-primary mb-4"
@@ -86,7 +86,7 @@ export const Register = () => {
                         ¿Ya tienes cuenta?{' '}
                         <Link
                             to="/login"
-                            className="font-bold"
+                            className="font-bold text-[#ED6B86]"
                         >
                             Inicia sesión
                         </Link>

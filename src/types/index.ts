@@ -32,3 +32,13 @@ export interface User {
     username: string;
     email: string;
 }
+
+export interface Perfil {
+    id: number;
+    name: string;
+    image: string;
+    content: string;
+    postId: number;
+    postImg: string;
+    createdAt: string;
+}

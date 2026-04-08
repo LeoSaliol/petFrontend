@@ -1,15 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { ButtonFile } from '../components/ButtonFile';
-import { createPost } from '../api/axios';
+import { createPost, updatePost } from '../api/axios';
 import { useAuth } from '../context/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cropper from 'react-easy-crop';
 import { getCroppedImg } from '../utils/cropped';
+import { toast, Toaster } from 'sonner';
 
 export const CreatePost = () => {
-    const [preview, setPreview] = useState<string | null>(null);
+    const location = useLocation();
+    const post = location.state?.post;
+
+    const [preview, setPreview] = useState<string | undefined>(post?.image);
     const [file, setFile] = useState<File | null>(null);
+    const [content, setContent] = useState(post?.content || '');
     const [modalOpen, setModalOpen] = useState(false);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
@@ -40,17 +45,30 @@ export const CreatePost = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Aquí puedes manejar el envío del formulario, incluyendo la imagen y la descripción
-        if (!file) {
-            console.error('No se ha seleccionado una imagen');
-            return;
-        }
 
         const formData = new FormData(e.currentTarget);
         const content = formData.get('content') as string;
 
         try {
-            await createPost(pet?.id, content, file);
+            if (post) {
+                const res = await updatePost(post!.id, content, file as File);
+
+                if (res === 200) {
+                    toast.success('Post actualizado correctamente');
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                    navigate('/');
+                }
+            } else {
+                if (!file) {
+                    console.error('No se ha seleccionado una imagen');
+                    return;
+                }
+                await createPost(pet?.id, content, file);
+                toast.success('Post creado correctamente');
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                navigate('/');
+            }
+
             navigate('/');
             // Aquí puedes llamar a tu función para crear la publicación con los datos del formulario
         } catch (error) {
@@ -60,6 +78,10 @@ export const CreatePost = () => {
 
     return (
         <div className=" h-[30vh] flex  mt-14 gap-10   w-full  ">
+            <Toaster
+                position="top-center"
+                richColors
+            />
             {modalOpen && (
                 <div className=" w-full h-full fixed top-0 left-0 bg-black/50 flex items-center justify-center z-20">
                     <div className="absolute  h-full mx-auto left-0 right-0 top-0  z-10">
@@ -85,17 +107,7 @@ export const CreatePost = () => {
                     </button>
                 </div>
             )}
-            {/* Imagen */}
-            {/* <div className="">
-                <img
-                    src={
-                        preview ||
-                        'https://cnpspca.org/wp-content/uploads/2020/07/Placeholder_Cat.png'
-                    }
-                    alt="preview"
-                    className="w-full h-full object-cover rounded-xl border"
-                />
-            </div> */}
+
             <div className="w-[50%] h-[45%] ">
                 <ButtonFile
                     preview={preview}
@@ -104,33 +116,24 @@ export const CreatePost = () => {
                 />
             </div>
 
-            {/* Form */}
             <form
                 className="flex flex-col  w-[50%] gap-8 mt-11 "
                 onSubmit={handleSubmit}
             >
-                {/* Descripción */}
                 <input
                     name="content"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                     type="text"
                     placeholder="Descripción de la publicación"
                     className="w-[95%] mx-auto border-b border-[#FAB3A9] focus:outline-none focus:border-[#ED6B86] py-2"
                 />
 
-                {/* <input
-                name='image'
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="text-sm border-2 border-[#fab2a973] focus:outline-none focus:border-gray-500 py-2 rounded-lg w-[95%] mx-auto"
-
-                /> */}
-                {/* Botón */}
                 <button
                     type="submit"
-                    className="bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] text-white py-2 rounded-lg font-semibold hover:opacity-90 transition"
+                    className="bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] text-white py-2 rounded-lg font-semibold hover:opacity-90 transition cursor-pointer"
                 >
-                    Post
+                    {post ? 'Actualizar Publicación' : 'Crear Publicación'}
                 </button>
             </form>
         </div>

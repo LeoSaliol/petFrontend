@@ -32,8 +32,8 @@ export const Login = () => {
         }
     };
     return (
-        <main className="min-h-screen w-[30%]  flex justify-center items-center mx-auto">
-            <div className="flex flex-col items-center gap-16 border p-6 rounded-lg h-full w-full shadow-lg bg-[#fab2a918] border-[#b6a5ad5e] ">
+        <main className="min-h-screen w-full  flex justify-center items-center mx-auto dark:bg-primaryText dark:text-background">
+            <div className="flex flex-col items-center gap-16 border px-6 py-18 rounded-lg h-full w-[30%] shadow-lg bg-[#fab2a918] dark:bg-primaryText border-[#b6a5ad5e] dark:border-[#ee73ac27] ">
                 <Link
                     to="/"
                     className="font-title text-[2.5rem] text-primary mb-4"
@@ -73,7 +73,7 @@ export const Login = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full py-2 rounded-full text-white font-semibold bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] hover:opacity-90 transition"
+                        className="w-full py-2 rounded-full text-white font-semibold bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] hover:opacity-90 transition cursor-pointer"
                     >
                         Login
                     </button>
@@ -81,7 +81,7 @@ export const Login = () => {
                         No tienes cuenta?{' '}
                         <Link
                             to="/register"
-                            className="font-bold"
+                            className="font-bold text-[#ED6B86]"
                         >
                             Regístrate
                         </Link>

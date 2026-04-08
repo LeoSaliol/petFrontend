@@ -21,12 +21,12 @@ export const CreatePostButton = () => {
             <Link
                 to="/create-post"
                 className="
-          w-14 h-14 rounded-full bg-[#ED6B86] text-background text-[3.4rem]
+          w-14 h-14 rounded-full bg-[#ED6B86] dark:bg-[#463239] text-background text-[3.4rem]
           flex items-center justify-center
           shadow-lg cursor-pointer
 
           transition-all duration-400
-          transform group-hover:scale-110
+          transform group-hover:scale-100
           hover:bg-[#c2546cf1]
         "
             >

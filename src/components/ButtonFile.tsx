@@ -34,7 +34,7 @@ export const ButtonFile = ({ preview, onChange, className }: props) => {
             {/* botón custom */}
             <div
                 onClick={handleClick}
-                className={`${className || ''}   w-full h-112  cursor-pointer group relative`}
+                className={`${className || ''}    cursor-pointer group relative`}
             >
                 <img
                     src={
@@ -42,10 +42,12 @@ export const ButtonFile = ({ preview, onChange, className }: props) => {
                         'https://cnpspca.org/wp-content/uploads/2020/07/Placeholder_Cat.png'
                     }
                     alt="preview"
-                    className=" w-full h-full object-cover  rounded-xl border"
+                    className={
+                        '  object-cover ' + (className || '') + '   border'
+                    }
                 />
 
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm rounded-xl transition">
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm  transition">
                     Cambiar foto
                 </div>
             </div>

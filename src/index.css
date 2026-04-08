@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
 @theme {
     --font-title: Kavoon, serif;
     --font-content: Bricolage Grotesque, sans-serif;
@@ -40,4 +41,26 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: #71717a; /* zinc-500 */
+}
+
+.color-change-2x {
+    -webkit-animation: color-change-2x 4s linear infinite alternate both;
+    animation: color-change-2x 4s linear infinite alternate both;
+}
+
+@-webkit-keyframes color-change-2x {
+    0% {
+        color: #fab3a9;
+    }
+    100% {
+        color: #ed6b86;
+    }
+}
+@keyframes color-change-2x {
+    0% {
+        color: #ed6b86;
+    }
+    100% {
+        color: #fab3a9;
+    }
 }

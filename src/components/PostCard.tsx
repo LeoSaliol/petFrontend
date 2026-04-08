@@ -1,23 +1,14 @@
 import { useState } from 'react';
 import { CommentIcon } from '../icons/CommentIcon';
 import { HeartIcon } from '../icons/LikeIcon';
-
 import { timeAgoShort } from '../utils/time';
 import { useAuth } from '../context/useAuth';
-
 import { CommentModal } from './CommentModal';
-import type { Post } from '../types';
+import type { Perfil, Post } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
-
-interface Perfil {
-    id: number;
-    name: string;
-    image: string;
-    content: string;
-    postId: number;
-    postImg: string;
-    createdAt: string;
-}
+import { ConfigPost } from './ConfigPost';
+import { deletePost } from '../api/axios';
+import { toast, Toaster } from 'sonner';
 
 export default function PostCard({
     post,
@@ -47,9 +38,37 @@ export default function PostCard({
         setSelectedPostId(post);
     };
 
+    const handleDelete = async (postId: number) => {
+        try {
+            const res = await deletePost(postId);
+            if (res === 'Post deleted') {
+                toast.success('Post eliminado correctamente');
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                navigate(0);
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        }
+    };
+
+    const handleEdit = (post: Post) => {
+        navigate('/create-post', {
+            state: {
+                post: {
+                    id: post.id,
+                    content: post.content,
+                    image: post.image,
+                },
+            },
+        });
+    };
     return (
         <>
-            {openModal && userToken && (
+            <Toaster
+                position="top-center"
+                richColors
+            />
+            {openModal && (
                 <CommentModal
                     pcomment={selectedPostId}
                     closeModal={() => setOpenModal(false)}
@@ -78,7 +97,7 @@ export default function PostCard({
                     <img
                         src={post.image}
                         alt="Cat"
-                        className=" aspect-60/70 w-[45%] object-cover mx-auto rounded-lg"
+                        className=" aspect-65/70 w-[50%] object-fill mx-auto rounded-sm"
                     />
                 </picture>
                 <div className="p-4 mx-4">
@@ -88,9 +107,9 @@ export default function PostCard({
                             onClick={() => handleLike(post.id, post.pet.id)}
                         >
                             <HeartIcon
-                                className="w-7 h-7 cursor-pointer "
-                                stroke={post.likedByUser ? '#ED6B86' : '#000'}
-                                fill={post.likedByUser ? '#ED6B86' : 'none'}
+                                className={`w-7 h-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110  ${post.likedByUser ? 'dark:fill-[#ED6B86]' : 'dark:stroke-background'} `}
+                                stroke={post.likedByUser ? '#ED6B86 ' : '#000 '}
+                                fill={post.likedByUser ? '#ED6B86 ' : 'none'}
                             />
 
                             <span>{post._count.likes}</span>
@@ -98,7 +117,7 @@ export default function PostCard({
 
                         <span className="flex items-center gap-2">
                             <CommentIcon
-                                className="w-6 h-6 cursor-pointer"
+                                className="w-6 h-6 cursor-pointer dark:stroke-background"
                                 onClick={() =>
                                     openCommentModal({
                                         id: post.pet.id,
@@ -113,6 +132,12 @@ export default function PostCard({
                             />
                             <span>{post._count.comments}</span>
                         </span>
+                        {post.pet.id === userToken && (
+                            <ConfigPost
+                                handleDelete={() => handleDelete(post.id)}
+                                handleEdit={() => handleEdit(post)}
+                            />
+                        )}
                     </div>
 
                     <div className="text-lg flex gap-2 items-center">
