@@ -7,27 +7,20 @@ import { useAuth } from "../context/useAuth";
 import { EditIcon } from "../icons/EditIcon";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PerfilSkeleton } from "../skeleton/PerfilSkeleton";
-import type { Post } from "../types";
+import type { Perfil, Post } from "../types";
 
 interface PostPerfil {
   id: number;
   image: string;
   content: string;
   createdAt: string;
-}
-
-interface Perfil {
-  id: number;
-  name: string;
-  image: string;
-  content: string;
-  postId: number;
-  postImg: string;
-  createdAt: string;
+  _count: {
+    likes: number;
+    comments: number;
+  };
 }
 
 export const Profile = () => {
-  // const [perfilData, setPerfilData] = useState<PerfilData | null>(null);
   const [commentData, setCommentData] = useState<Perfil | null>(null);
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -80,40 +73,7 @@ export const Profile = () => {
     },
   });
 
-  // useEffect(() => {
-  //     if (!id) return;
-
-  //     const getPerfilData = async () => {
-  //         try {
-  //             const idPet = Number(id);
-
-  //             let response;
-
-  //             if (!pet) {
-  //                 response = await getPerfil(idPet);
-  //             } else {
-  //                 response = await getPerfil(idPet, pet.id);
-  //             }
-
-  //             setPerfilData(response);
-  //         } catch (error) {
-  //             console.error('Error fetching profile data:', error);
-  //         }
-  //     };
-
-  //     getPerfilData();
-  // }, [id, pet]);
   const handlePost = (post: PostPerfil) => {
-    // setCommentData({
-    //     id: perfilData!.id,
-    //     name: perfilData!.name,
-    //     image: perfilData!.image,
-    //     content: perfilData!.posts[i]!.content,
-    //     postId: perfilData!.posts[i]!.id,
-    //     postImg: perfilData!.posts[i]!.image,
-    //     createdAt: perfilData!.posts[i]!.createdAt,
-    // });
-    // setOpenModal(!openModal);
     setCommentData({
       id: perfilData!.id,
       name: perfilData!.name,
@@ -122,6 +82,10 @@ export const Profile = () => {
       postId: post.id,
       postImg: post.image,
       createdAt: post.createdAt,
+      _count: {
+        likes: post._count.likes,
+        comments: post._count.comments,
+      },
     });
 
     setOpenModal(true);
@@ -135,35 +99,8 @@ export const Profile = () => {
       return;
     }
     followMutation.mutate(perfilData.id);
-    // if (!pet) {
-    //     navigate('/login');
-    //     return;
-    // }
-    // if (perfilData) {
-    //     try {
-    //         if (perfilData.id === pet.id) {
-    //             return;
-    //         }
-    //         const data = await followPet(perfilData.id);
-    //         setPerfilData((prev) =>
-    //             prev
-    //                 ? {
-    //                       ...prev,
-    //                       isFollowing: data.following,
-    //                       followersCount: data.following
-    //                           ? prev.followersCount + 1
-    //                           : prev.followersCount - 1,
-    //                   }
-    //                 : prev,
-    //         );
-    //     } catch (error) {
-    //         console.error('Error following pet:', error);
-    //     }
-    // } else {
-    //     console.error('Perfil data is not available');
-    // }
   };
-
+  console.log(perfilData);
   const handleEditProfile = async () => {
     navigate("/pets", {
       state: {
@@ -188,7 +125,7 @@ export const Profile = () => {
         />
       )}
 
-      <header className="relative mt-12 flex items-center gap-9 md:gap-18">
+      <header className="relative mt-6 flex items-center gap-9 md:gap-18">
         <img
           src={perfilData?.image}
           alt=""
@@ -205,7 +142,7 @@ export const Profile = () => {
         </div>
         <button
           onClick={handleFollow}
-          className="text-background absolute bottom-[-1.9rem] left-[40%] w-[30%] cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold transition hover:opacity-70 md:relative md:bottom-0 md:left-0 md:w-[15%]"
+          className="text-background absolute bottom-[-3.3rem] left-[40%] w-[30%] cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold transition hover:opacity-70 md:relative md:bottom-0 md:left-0 md:w-[15%]"
         >
           {perfilData?.isFollowing ? (
             "Siguiendo"
@@ -229,7 +166,7 @@ export const Profile = () => {
               <img
                 src={post.image}
                 alt=""
-                className="h-120 w-full cursor-pointer rounded-sm object-cover shadow-lg transition md:hover:opacity-70"
+                className="z-10 h-120 w-full cursor-pointer rounded-sm object-cover shadow-lg transition hover:opacity-70"
               />
             </div>
           ))

@@ -1,11 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { createComment, getComments } from "../api/axios";
+import { createComment, deletePost, getComments } from "../api/axios";
 import { timeAgoShort } from "../utils/time";
 import { useAuth } from "../context/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Perfil } from "../types";
+import { toast } from "sonner";
+import { ConfigPost } from "./ConfigPost";
+import { CommentIcon } from "../icons/CommentIcon";
+import { HeartIcon } from "../icons/LikeIcon";
+import { useLikePost } from "../hooks/useLike";
 
 interface Comment {
   id: number;
@@ -28,21 +33,16 @@ export const CommentModal = ({
   pcomment: Perfil | null;
   closeModal: () => void;
 }) => {
-  // const [comments, setComments] = useState<Comment[]>([]);
-
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ["comments", pcomment?.postId],
     queryFn: () => getComments(pcomment!.postId),
     enabled: !!pcomment?.postId,
   });
+  const navigate = useNavigate();
+  const likeMutation = useLikePost();
 
   const queryClient = useQueryClient();
   useEffect(() => {
-    // const fetchComments = async () => {
-    //     const commentsData = await getComments(pcomment!.postId);
-    //     setComments(commentsData);
-    // };
-    // fetchComments();
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeModal();
     };
@@ -139,6 +139,30 @@ export const CommentModal = ({
     //     console.log(error);
     // }
   };
+  const handleDelete = async (postId: number) => {
+    try {
+      const res = await deletePost(postId);
+      if (res === "Post deleted") {
+        toast.success("Post eliminado correctamente");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        navigate(0);
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
+  const handleEdit = (post: { id: number; content: string; image: string }) => {
+    navigate("/create-post", {
+      state: {
+        post: {
+          id: post!.id,
+          content: post.content,
+          image: post.image,
+        },
+      },
+    });
+  };
 
   if (isLoading) {
     <div className="text-xl">cargando</div>;
@@ -158,6 +182,25 @@ export const CommentModal = ({
           className="h-[45%] object-cover md:h-[85%] md:w-140 md:rounded-l-lg"
           onClick={(e) => e.stopPropagation()}
         />
+
+        <div className="relative">
+          <div
+            className="absolute right-3 bottom-[-2.4rem]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ConfigPost
+              classGroup=" right-2 top-8  "
+              handleDelete={() => handleDelete(pcomment!.id)}
+              handleEdit={() =>
+                handleEdit({
+                  id: pcomment!.postId,
+                  content: pcomment!.content,
+                  image: pcomment!.postImg,
+                })
+              }
+            />
+          </div>
+        </div>
         <div
           className="relative mb-7 flex h-[85%] flex-col overflow-hidden bg-[#130f11] px-12 pt-6 md:mt-0 md:w-[25%] md:rounded-r-lg md:px-6"
           onClick={(e) => e.stopPropagation()}
@@ -184,10 +227,29 @@ export const CommentModal = ({
           <p className="mx-6 -mt-5 pl-[2.1rem] text-sm font-light md:-mt-2 md:pl-9">
             {pcomment?.content}
           </p>
-          <div className="custom-scrollbar mt-4 flex-1 overflow-y-auto pr-2">
+          <div className="mt-4 mb-3 ml-1 flex items-center gap-3">
+            <span
+              className="flex items-center gap-1"
+              onClick={() => likeMutation.mutate({ postId: pcomment!.postId })}
+            >
+              <HeartIcon
+                width={24}
+                className={`dark:stroke-background h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110`}
+              />{" "}
+              {pcomment?._count.likes}
+            </span>
+            <span className="flex items-center gap-2">
+              <CommentIcon
+                width={24}
+                className="dark:stroke-background h-6 w-6 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110"
+              />{" "}
+              {pcomment?._count.comments}
+            </span>
+          </div>
+          <div className="custom-scrollbar flex-1 overflow-y-auto pr-2">
             {comments.length > 0 ? (
               comments.map((comment: Comment) => (
-                <div key={comment.id} className="mt-4 flex items-center gap-3">
+                <div key={comment.id} className="mt-3 flex items-center gap-3">
                   <Link to={`/profile/${comment.pet.id}`} onClick={closeModal}>
                     <img
                       src={comment.pet.image}

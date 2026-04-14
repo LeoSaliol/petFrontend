@@ -1,44 +1,49 @@
 export type Pet = {
-    id: number;
-    ownerId: number;
-    createdAT: string;
-    name: string;
-    image: string;
-    bio: string;
+  id: number;
+  ownerId: number;
+  createdAT: string;
+  name: string;
+  image: string;
+  bio: string;
 };
 
 export interface Post {
+  id: number;
+  content: string;
+  image: string;
+  createdAt: string;
+  likes: number[];
+  pet: {
     id: number;
-    content: string;
+    name: string;
     image: string;
-    createdAt: string;
-    likes: number[];
-    pet: {
-        id: number;
-        name: string;
-        image: string;
-    };
-    _count: {
-        likes: number;
-        comments: number;
-    };
-    likedByUser?: boolean;
-    newComment?: string;
+  };
+  _count: {
+    likes: number;
+    comments: number;
+  };
+  likedByUser?: boolean;
+  newComment?: string;
 }
 
 export interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
 export interface Perfil {
-    id: number;
-    name: string;
-    image: string;
-    content: string;
-    postId: number;
-    postImg: string;
-    createdAt: string;
+  id: number;
+  name: string;
+  image: string;
+  content: string;
+  postId: number;
+  postImg: string;
+  createdAt: string;
+  _count: {
+    likes: number;
+    comments: number;
+  };
+  likedByUser?: boolean;
 }

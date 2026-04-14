@@ -1,37 +1,23 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-export const CreatePostButton = () => {
-    return (
-        <div className="fixed bottom-12 left-10 group">
-            {/* Tooltip */}
-            <div
-                className="
-        absolute left-14 top-1/2 -translate-y-1/2
-        opacity-0 group-hover:opacity-100
-        translate-x-[-4] group-hover:translate-x-1
-        transition-all duration-400
-        bg-primaryText text-background text-sm px-3 py-1 rounded-lg shadow-lg
-        whitespace-nowrap
-      "
-            >
-                Crear publicación
-            </div>
+export const CreatePostButton = ({ clasN }: { clasN?: string }) => {
+  return (
+    <div className={` ${clasN ? clasN : ""} group`}>
+      <div
+        className={
+          "bg-primaryText text-background absolute top-1/2 left-14 translate-x-[-4] -translate-y-1/2 rounded-lg px-3 py-1 text-sm whitespace-nowrap opacity-0 shadow-lg transition-all duration-400 group-hover:translate-x-1 group-hover:opacity-100 " +
+          (clasN ? "hidden md:block" : "")
+        }
+      >
+        Crear publicación
+      </div>
 
-            {/* Botón */}
-            <Link
-                to="/create-post"
-                className="
-          w-14 h-14 rounded-full bg-[#ED6B86] dark:bg-[#463239] text-background text-[3.4rem]
-          flex items-center justify-center
-          shadow-lg cursor-pointer
-
-          transition-all duration-400
-          transform group-hover:scale-100
-          hover:bg-[#c2546cf1]
-        "
-            >
-                +
-            </Link>
-        </div>
-    );
+      <Link
+        to="/create-post"
+        className="text-background flex h-14 w-14 transform cursor-pointer items-center justify-center rounded-full bg-[#ED6B86] text-[3.4rem] shadow-lg transition-all duration-400 group-hover:scale-100 hover:bg-[#c2546cf1] dark:bg-[#463239]"
+      >
+        +
+      </Link>
+    </div>
+  );
 };

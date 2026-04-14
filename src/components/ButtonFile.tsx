@@ -1,56 +1,53 @@
-import { useRef } from 'react';
+import { useRef } from "react";
 
 type props = {
-    preview: string | null;
-    onChange: (file: File) => void;
-    className?: string;
+  preview: string | null;
+  onChange: (file: File) => void;
+  className?: string;
 };
 export const ButtonFile = ({ preview, onChange, className }: props) => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleClick = () => {
-        fileInputRef.current?.click();
-    };
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
-        if (file) {
-            onChange(file);
-        }
-    };
+    if (file) {
+      onChange(file);
+      e.target.value = "";
+    }
+  };
 
-    return (
-        <div className="flex-col w-full  ">
-            {/* input oculto */}
-            <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleChange}
-                className="hidden"
-                accept="image/*"
-            />
+  return (
+    <div className="w-full flex-col">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleChange}
+        className="hidden"
+        accept="image/*"
+      />
 
-            {/* botón custom */}
-            <div
-                onClick={handleClick}
-                className={`${className || ''}    cursor-pointer group relative`}
-            >
-                <img
-                    src={
-                        preview ||
-                        'https://cnpspca.org/wp-content/uploads/2020/07/Placeholder_Cat.png'
-                    }
-                    alt="preview"
-                    className={
-                        '  object-cover ' + (className || '') + '   border'
-                    }
-                />
+      <div
+        onClick={handleClick}
+        className={`${className || ""} group relative cursor-pointer`}
+      >
+        <img
+          src={
+            preview ||
+            "https://cnpspca.org/wp-content/uploads/2020/07/Placeholder_Cat.png"
+          }
+          alt="preview"
+          className={"object-cover " + (className || "") + " border"}
+        />
 
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm  transition">
-                    Cambiar foto
-                </div>
-            </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-sm text-white opacity-0 transition group-hover:opacity-100">
+          Cambiar foto
         </div>
-    );
+      </div>
+    </div>
+  );
 };

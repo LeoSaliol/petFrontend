@@ -9,6 +9,7 @@
   --color-primaryText: #0b090a;
   --color-background: #fff9fa;
   --breakpoint-md: 1100px;
+  --breakpoint-inScroll: 1550px;
 }
 
 @keyframes fadeIn {

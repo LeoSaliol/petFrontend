@@ -1,43 +1,36 @@
-import { DotsIcon } from '../icons/DotsIcon';
+import { DotsIcon } from "../icons/DotsIcon";
 
 export const ConfigPost = ({
-    handleDelete,
-    handleEdit,
+  handleDelete,
+  handleEdit,
+  classGroup,
 }: {
-    handleEdit: () => void;
-    handleDelete: () => void;
+  handleEdit: () => void;
+  handleDelete: () => void;
+  classGroup?: string;
 }) => {
-    return (
-        <span className="ml-auto group relative ">
-            <div
-                className="absolute right-6 bottom-4 
-        opacity-0 group-hover:opacity-100
-        translate-x-[-9] group-hover:translate-x-2
-        transition-all duration-400
-        bg-primaryText text-background text-sm  rounded-md shadow-lg 
-        whitespace-nowrap"
-            >
-                <li className="flex flex-col ">
-                    <button
-                        className="py-4 px-9 text-[1rem] cursor-pointer hover:bg-[#b6a5ad28] "
-                        onClick={handleEdit}
-                    >
-                        Editar
-                    </button>
-                    <button
-                        className="py-4 px-9 text-[1rem] cursor-pointer hover:bg-[#b6a5ad28] "
-                        onClick={handleDelete}
-                    >
-                        Eliminar
-                    </button>
-                </li>
-            </div>
-            <DotsIcon
-                className="w-6 h-6  stroke-3 cursor-pointer
+  return (
+    <span className="group relative ml-auto">
+      <DotsIcon className="h-6 w-6 transform cursor-pointer stroke-3 transition-all duration-400 group-hover:scale-110 dark:fill-pink-200" />
 
-          transition-all duration-400
-          transform group-hover:scale-110"
-            />
-        </span>
-    );
+      <div
+        className={`bg-primaryText text-background ${classGroup ? classGroup : "right-6 bottom-4"} absolute translate-x-[-9] overflow-hidden rounded-md text-sm whitespace-nowrap opacity-0 shadow-lg transition-all duration-400 group-hover:translate-x-2 group-hover:opacity-100 dark:bg-[#1d181ace]`}
+      >
+        <li className="flex flex-col">
+          <button
+            className="cursor-pointer px-9 py-4 text-[1rem] hover:bg-[#b6a5ad28]"
+            onClick={handleEdit}
+          >
+            Editar
+          </button>
+          <button
+            className="cursor-pointer px-9 py-4 text-[1rem] hover:bg-[#b6a5ad28]"
+            onClick={handleDelete}
+          >
+            Eliminar
+          </button>
+        </li>
+      </div>
+    </span>
+  );
 };
