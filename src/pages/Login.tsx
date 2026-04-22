@@ -33,9 +33,10 @@ export const Login = () => {
       const pets = await myPets();
       if (pets.length === 0) {
         navigate("/pets");
+      } else {
+        toast.success("Usuario logueado exitosamente");
+        setTimeout(() => navigate("/"), 2000);
       }
-      toast.success("Usuario logueado exitosamente");
-      setTimeout(() => navigate("/"), 2000);
     } catch (error: any) {
       console.log("llego al error", error);
       if (error.response?.data?.message) {

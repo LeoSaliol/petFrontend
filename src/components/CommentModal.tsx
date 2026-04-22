@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
 
-import { createComment, deletePost, getComments } from "../api/axios";
+import { createComment, deletePost, getComments, getPost } from "../api/axios";
 import { timeAgoShort } from "../utils/time";
 import { useAuth } from "../context/useAuth";
 import { Link, useNavigate } from "react-router-dom";
@@ -36,6 +37,11 @@ export const CommentModal = ({
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ["comments", pcomment?.postId],
     queryFn: () => getComments(pcomment!.postId),
+    enabled: !!pcomment?.postId,
+  });
+  const { data: post } = useQuery({
+    queryKey: ["post", pcomment?.postId],
+    queryFn: () => getPost(pcomment!.postId),
     enabled: !!pcomment?.postId,
   });
   const navigate = useNavigate();
@@ -170,7 +176,7 @@ export const CommentModal = ({
 
   return (
     <div
-      className="text-background fixed top-0 left-0 z-50 h-full w-full bg-[#0d0e0ff3] md:bg-[#34363471]"
+      className="text-background fixed top-0 left-0 z-90 h-full w-full bg-[#0d0e0ff3] md:bg-[#34363471]"
       onClick={() => {
         closeModal();
       }}
@@ -190,7 +196,7 @@ export const CommentModal = ({
           >
             <ConfigPost
               classGroup=" right-2 top-8  "
-              handleDelete={() => handleDelete(pcomment!.id)}
+              handleDelete={() => handleDelete(pcomment!.postId)}
               handleEdit={() =>
                 handleEdit({
                   id: pcomment!.postId,
@@ -234,9 +240,9 @@ export const CommentModal = ({
             >
               <HeartIcon
                 width={24}
-                className={`dark:stroke-background h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110`}
+                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post?.likes.some((like: any) => like.petId === pet?.id) ? "fill-likeColor dark:stroke-likeColor" : "dark:stroke-background"} `}
               />{" "}
-              {pcomment?._count.likes}
+              {post?._count.likes}
             </span>
             <span className="flex items-center gap-2">
               <CommentIcon

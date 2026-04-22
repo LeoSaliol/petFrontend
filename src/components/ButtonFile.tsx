@@ -22,7 +22,7 @@ export const ButtonFile = ({ preview, onChange, className }: props) => {
   };
 
   return (
-    <div className="w-full flex-col">
+    <div className="flex-col">
       <input
         type="file"
         ref={fileInputRef}
@@ -41,7 +41,7 @@ export const ButtonFile = ({ preview, onChange, className }: props) => {
             "https://cnpspca.org/wp-content/uploads/2020/07/Placeholder_Cat.png"
           }
           alt="preview"
-          className={"object-cover " + (className || "") + " border"}
+          className={"object-cover " + (className || "") + " "}
         />
 
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-sm text-white opacity-0 transition group-hover:opacity-100">

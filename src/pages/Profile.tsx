@@ -100,7 +100,7 @@ export const Profile = () => {
     }
     followMutation.mutate(perfilData.id);
   };
-  console.log(perfilData);
+
   const handleEditProfile = async () => {
     navigate("/pets", {
       state: {

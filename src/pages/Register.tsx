@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { EyeIcon, EyeOffIcon } from "../icons/EyeIcon";
@@ -44,23 +45,7 @@ export const Register = () => {
       }
     }
   };
-  // const registerHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const data = new FormData(e.currentTarget);
-  //   const username = data.get("username") as string;
-  //   const email = data.get("email") as string;
-  //   const password = data.get("password") as string;
-  //   try {
-  //     await registerUser(username, email, password);
-  //     toast.success("Usuario registrado exitosamente");
-  //     await new Promise((resolve) => setTimeout(resolve, 3000));
-  //     navigate("/login");
-  //   } catch (error) {
-  //     console.error("Error registering user:", error);
-  //     toast.error("Error registering user");
-  //   }
-  //   console.log();
-  // };
+
   return (
     <main className="dark:bg-primaryText dark:text-background mx-auto flex min-h-screen w-full items-center justify-center">
       <Toaster position="top-center" richColors />

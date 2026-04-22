@@ -20,15 +20,6 @@ export const Feed = () => {
     queryFn: () => getFeed(pet?.id),
   });
 
-  // const commentMutation = useMutation({
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   mutationFn: ({ postId, petId, content }: any) =>
-  //     createComment(postId, petId, content),
-
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["feed"] });
-  //   },
-  // });
   const handleLike = async (postId: number) => {
     if (!userToken) {
       navigate("/login");

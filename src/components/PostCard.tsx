@@ -62,6 +62,7 @@ export default function PostCard({
       },
     });
   };
+
   return (
     <>
       <Toaster position="top-center" richColors />
@@ -75,16 +76,16 @@ export default function PostCard({
         key={post.id}
         className="mt-11 mb-24 w-full rounded-xl border border-[#b6a5ad11] md:mb-6 md:py-4"
       >
-        <div className="flex items-center gap-1 p-2 py-6 md:p-1">
+        <div className="mx-2 flex items-center gap-1 p-2 py-6 md:mx-3 md:p-1">
           <Link to={`/profile/${post.pet.id}`}>
             <img
               src={post.pet.image}
               alt={post.pet.name}
-              className="mx-3 h-9 w-9 rounded-full object-cover md:h-10 md:w-10"
+              className="h-9 w-9 rounded-full object-cover md:h-10 md:w-10"
             />
           </Link>
           <Link to={`/profile/${post.pet.id}`}>
-            <span className="font-content">{post.pet.name} </span>
+            <span className="font-content ml-2">{post.pet.name} </span>
           </Link>
           <span className="ml-auto text-xs text-[#a58e99]">
             {timeAgoShort(post.createdAt)}
@@ -104,9 +105,7 @@ export default function PostCard({
               onClick={() => handleLike(post.id, post.pet.id)}
             >
               <HeartIcon
-                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post.likedByUser ? "dark:fill-[#ED6B86]" : "dark:stroke-background"} `}
-                stroke={post.likedByUser ? "#ED6B86 " : "#000 "}
-                fill={post.likedByUser ? "#ED6B86 " : "none"}
+                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post.likedByUser ? "fill-likeColor stroke-likeColor" : "stroke-primaryText dark:stroke-background fill-background dark:fill-none"} `}
               />
 
               <span className="">{post._count.likes}</span>
@@ -134,7 +133,8 @@ export default function PostCard({
               />
               <span>{post._count.comments}</span>
             </span>
-            {post.pet.id === userToken && (
+
+            {post.pet.id === pet?.id && (
               <ConfigPost
                 handleDelete={() => handleDelete(post.id)}
                 handleEdit={() => handleEdit(post)}

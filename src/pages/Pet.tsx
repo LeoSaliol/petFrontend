@@ -8,7 +8,7 @@ import { toast, Toaster } from "sonner";
 import { useAuth } from "../context/useAuth";
 
 const Pet = () => {
-  const { petId } = useAuth();
+  const { petId, pet } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const petProps: { id: number; name: string; bio: string; image: string } =
@@ -36,10 +36,7 @@ const Pet = () => {
     const formData = new FormData(e.currentTarget);
     const namepet = formData.get("name") as string;
     const bio = formData.get("bio") as string;
-    if (!file) {
-      toast.error("La imagen es obligatoria");
-      return;
-    }
+
     if (petProps) {
       try {
         const res = await updatePet(namepet, bio, file, petProps.id);
@@ -53,6 +50,10 @@ const Pet = () => {
       }
     } else {
       try {
+        if (!file) {
+          toast.error("La imagen es obligatoria");
+          return;
+        }
         const response = await createPet(namepet, bio, file);
         if (response?.status === 201) {
           toast.success("Perfil creado correctamente");
@@ -85,7 +86,7 @@ const Pet = () => {
   };
 
   useEffect(() => {
-    if (!petProps) {
+    if (pet) {
       toast.error(
         "Ya tienes una mascota creada, solo puedes tener una mascota por cuenta",
       );
@@ -94,7 +95,7 @@ const Pet = () => {
         navigate("/");
       }, 3000);
     }
-  }, [petId]);
+  }, [pet]);
   // if (petId !== null) {
   //   toast.error(
   //     "Ya tienes una mascota creada, solo puedes tener una mascota por cuenta",

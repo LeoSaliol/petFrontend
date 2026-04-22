@@ -70,7 +70,6 @@ export const CreatePost = () => {
       }
 
       navigate("/");
-      // Aquí puedes llamar a tu función para crear la publicación con los datos del formulario
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -109,7 +108,7 @@ export const CreatePost = () => {
         <ButtonFile
           preview={preview ? preview : null}
           onChange={handleImageChange}
-          className="aspect-square md:aspect-3/4"
+          className="md: flex aspect-square h-full w-full cursor-pointer items-center justify-center border-dashed border-gray-400 bg-gray-100"
         />
       </div>
 

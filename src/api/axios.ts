@@ -55,10 +55,11 @@ export const loginUser = async (email: string, password: string) => {
 export const logoutUser = async () => {
   try {
     const response = await api.post("/auth/logout");
-    console.log("User logged out successfully:", response.data);
+
     return response;
   } catch (error) {
     console.error("Error logging out user:", error);
+    throw error;
   }
 };
 
@@ -85,7 +86,6 @@ export const myPets = async () => {
 };
 
 export const createPet = async (name: string, bio: string, image: File) => {
-  console.log(name, bio, image);
   const formData = new FormData();
   formData.append("name", name);
   formData.append("bio", bio);
@@ -97,6 +97,7 @@ export const createPet = async (name: string, bio: string, image: File) => {
     return response;
   } catch (error) {
     console.error("Error creating pet:", error);
+    throw error;
   }
 };
 
@@ -115,6 +116,7 @@ export const createPost = async (
     return response;
   } catch (error) {
     console.error("Error creating post:", error);
+    throw error;
   }
 };
 
@@ -124,6 +126,18 @@ export const toggleLike = async (postId: number) => {
     return response.data;
   } catch (error) {
     console.error("Error toggling like:", error);
+    throw error;
+  }
+};
+
+export const getLikesPost = async (postId: number) => {
+  try {
+    const response = await api.get(`/likes/${postId}`);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching likes:", error);
+    throw error;
   }
 };
 
@@ -141,6 +155,7 @@ export const createComment = async (
     return response.data;
   } catch (error) {
     console.error("Error creating comment:", error);
+    throw error;
   }
 };
 
@@ -149,7 +164,8 @@ export const getComments = async (postId: number) => {
     const response = await api.get(`/comments/${postId}`);
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching comments:", error);
+    throw error;
   }
 };
 
@@ -165,6 +181,7 @@ export const getPerfil = async (petId: number, userId?: number) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching profile data:", error);
+    throw error;
   }
 };
 
@@ -175,6 +192,7 @@ export const followPet = async (petId: number) => {
     return response.data;
   } catch (error) {
     console.error("Error following pet:", error);
+    throw error;
   }
 };
 
@@ -184,6 +202,7 @@ export const getPost = async (postId: number) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching post:", error);
+    throw error;
   }
 };
 
@@ -194,6 +213,7 @@ export const deletePost = async (postId: number) => {
     return response.data.message;
   } catch (error) {
     console.error("Error deleting post:", error);
+    throw error;
   }
 };
 export const updatePost = async (
@@ -208,10 +228,11 @@ export const updatePost = async (
   }
   try {
     const response = await api.put(`/posts/${postId}`, formData);
-    console.log(response);
+
     return response.status;
   } catch (error) {
     console.error("Error updating post:", error);
+    throw error;
   }
 };
 
@@ -233,10 +254,11 @@ export const updatePet = async (
     return response.status;
   } catch (error) {
     console.error("Error updating pet:", error);
+    throw error;
   }
 };
 
-export const getNotifications = async (petId: number, limit: number) => {
+export const getNotifications = async (petId: number, limit?: number) => {
   try {
     const response = await api.get(`/notifications/${petId}`, {
       params: { limit },
@@ -245,15 +267,17 @@ export const getNotifications = async (petId: number, limit: number) => {
     return response.data.data;
   } catch (error) {
     console.error("Error fetching notifications:", error);
+    throw error;
   }
 };
 
 export const markAsRead = async (notificationId: string) => {
   try {
     const response = await api.patch(`/notifications/${notificationId}/read`);
-    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error marking notification as read:", error);
+    throw error;
   }
 };

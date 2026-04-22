@@ -10,8 +10,10 @@ export const useLikePost = () => {
 
     onMutate: async ({ postId }) => {
       await queryClient.cancelQueries({ queryKey: ["feed"] });
+      await queryClient.cancelQueries({ queryKey: ["post", postId] });
 
-      const previous = queryClient.getQueryData(["feed"]);
+      const previousFeed = queryClient.getQueryData(["feed"]);
+      const previousPost = queryClient.getQueryData(["post", postId]);
 
       queryClient.setQueryData(["feed"], (old: any = []) =>
         old.map((post: any) =>
@@ -30,15 +32,32 @@ export const useLikePost = () => {
         ),
       );
 
-      return { previous };
+      queryClient.setQueryData(["post", postId], (old: any) => {
+        if (!old) return old;
+
+        return {
+          ...old,
+          likedByUser: !old.likedByUser,
+          _count: {
+            ...old._count,
+            likes: old.likedByUser
+              ? old._count.likes - 1
+              : old._count.likes + 1,
+          },
+        };
+      });
+
+      return { previousFeed, previousPost };
     },
 
-    onError: (_err, _vars, context) => {
-      queryClient.setQueryData(["feed"], context?.previous);
+    onError: (_err, { postId }, context) => {
+      queryClient.setQueryData(["feed"], context?.previousFeed);
+      queryClient.setQueryData(["post", postId], context?.previousPost);
     },
 
-    onSettled: () => {
+    onSettled: (_data, _err, { postId }) => {
       queryClient.invalidateQueries({ queryKey: ["feed"] });
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
     },
   });
 };
