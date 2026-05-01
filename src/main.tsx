@@ -14,6 +14,7 @@ import { ProtectedLayout } from "./routes/ProtectedLayout.tsx";
 import { CreatePost } from "./pages/CreatePost.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Notifications } from "./pages/Notifications.tsx";
+import ChatPage from "./pages/ChatPage.tsx";
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -39,6 +40,7 @@ createRoot(document.getElementById("root")!).render(
                 path="/notifications"
                 element={<App children={<Notifications />} />}
               />
+              <Route path="/chats" element={<App children={<ChatPage />} />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -8,6 +8,7 @@ import { EditIcon } from "../icons/EditIcon";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PerfilSkeleton } from "../skeleton/PerfilSkeleton";
 import type { Perfil, Post } from "../types";
+import { useChat } from "../hooks/useChat";
 
 interface PostPerfil {
   id: number;
@@ -21,6 +22,7 @@ interface PostPerfil {
 }
 
 export const Profile = () => {
+  const { openConversation } = useChat();
   const [commentData, setCommentData] = useState<Perfil | null>(null);
   const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -116,6 +118,11 @@ export const Profile = () => {
   if (isLoading) {
     return <PerfilSkeleton />;
   }
+
+  const handleOpenChat = () => {
+    openConversation(perfilData.ownerId); // emite el socket
+    navigate("/chats", { state: { targetUserId: perfilData.ownerId } }); // navega con el id
+  };
   return (
     <>
       {openModal && perfilData && (
@@ -140,24 +147,34 @@ export const Profile = () => {
           </div>
           <p className="text-md">{perfilData?.bio}</p>
         </div>
-        <button
-          onClick={handleFollow}
-          className="text-background absolute bottom-[-3.3rem] left-[40%] w-[30%] cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold transition hover:opacity-70 md:relative md:bottom-0 md:left-0 md:w-[15%]"
-        >
-          {perfilData?.isFollowing ? (
-            "Siguiendo"
-          ) : perfilData?.id === pet?.id ? (
-            <div
-              onClick={handleEditProfile}
-              className="flex h-10 items-center justify-center gap-2"
+        <div className="item-center absolute inset-x-0 bottom-[-3.3rem] mx-auto flex w-fit gap-3 md:relative md:bottom-0 md:left-0">
+          <button
+            onClick={handleFollow}
+            className="text-background w-36 cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold transition hover:opacity-70"
+          >
+            {perfilData?.isFollowing ? (
+              "Siguiendo"
+            ) : perfilData?.id === pet?.id ? (
+              <div
+                onClick={handleEditProfile}
+                className="flex h-10 items-center justify-center gap-2"
+              >
+                Editar perfil
+                <EditIcon className="stroke-background mr-1 inline-block h-7 w-6" />
+              </div>
+            ) : (
+              "Seguir"
+            )}
+          </button>
+          {pet && perfilData?.id !== pet.id && (
+            <button
+              className="w-36 cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] font-semibold transition hover:opacity-70"
+              onClick={handleOpenChat}
             >
-              Editar perfil
-              <EditIcon className="stroke-background mr-1 inline-block h-7 w-6" />
-            </div>
-          ) : (
-            "Seguir"
+              Enviar Mensaje
+            </button>
           )}
-        </button>
+        </div>
       </header>
       <main className="mt-20 mb-20 grid place-items-center gap-5 sm:grid-cols-1 md:mt-10 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
         {perfilData && perfilData.posts && perfilData.posts.length > 0 ? (

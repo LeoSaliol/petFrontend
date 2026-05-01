@@ -281,3 +281,14 @@ export const markAsRead = async (notificationId: string) => {
     throw error;
   }
 };
+
+export const getConservations = async () => {
+  try {
+    const response = await api.get("/conversations");
+
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching conversations:", error);
+    throw error;
+  }
+};

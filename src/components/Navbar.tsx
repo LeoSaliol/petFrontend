@@ -21,6 +21,8 @@ import { CreatePostButton } from "./ButtonPost";
 import { useTheme } from "../hooks/useDarkTheme";
 import { MoonIcon, SunIcon } from "../icons/ThemeIcon";
 import { NotificationModal } from "./NotificationModal";
+import { MessagesIcon } from "../icons/MessageIcon";
+import { useChat } from "../hooks/useChat";
 
 interface Notification {
   id: string;
@@ -39,8 +41,10 @@ interface Notification {
 export default function Navbar() {
   const { userToken, pet, refreshUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { conversations } = useChat();
   const location = useLocation();
-
+  const [bouncingMsgs, setBouncingMsgs] = useState(false);
+  const [bouncing, setBouncing] = useState(false);
   const [scroll, setScroll] = useState(false);
 
   const [openModal, setOpenModal] = useState<boolean | null>(false);
@@ -49,7 +53,10 @@ export default function Navbar() {
   const queryClient = useQueryClient();
   const [showNotifications, setShowNotifications] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const totalUnread = conversations.reduce(
+    (acc, conv) => acc + conv.unreadCount,
+    0,
+  );
   const loggout = async () => {
     await logoutUser();
     await refreshUser();
@@ -63,6 +70,12 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  useEffect(() => {
+    if (totalUnread > 0) {
+      setBouncingMsgs(true);
+      setBouncing(true);
+    }
+  }, [totalUnread]);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications", "preview"],
@@ -142,6 +155,17 @@ export default function Navbar() {
                   className="dark:fill-background cursor-pointer"
                 />
               </Link>
+              <Link to={userToken ? `/chats` : "/login"}>
+                {totalUnread > 0 && (
+                  <span className="absolute -top-1 -right-1 rounded-full bg-red-500 px-1 text-xs text-white">
+                    {totalUnread > 99 ? "99+" : totalUnread}
+                  </span>
+                )}
+                <MessagesIcon
+                  width={42}
+                  className="dark:fill-background mb-2 -rotate-140 cursor-pointer md:mb-0"
+                />
+              </Link>
               {userToken && <CreatePostButton clasN=" " />}
               <Link to={userToken ? `/profile/${pet?.id}` : "/login"}>
                 {userToken ? (
@@ -157,7 +181,7 @@ export default function Navbar() {
 
               <Link to="/login" onClick={userToken ? loggout : undefined}>
                 <LoginIcon
-                  width={39}
+                  width={47}
                   className={`pt-1 ${userToken ? "stroke-[#da1b41]" : "stroke-[#333]"} `}
                 />
               </Link>
@@ -176,10 +200,7 @@ export default function Navbar() {
             whileTap={{ scale: 0.95 }}
             onClick={toggleTheme}
             className={
-              "dark:text-background bg-background text-primaryText z-50 flex h-13 w-13 cursor-pointer items-center justify-center rounded-full border border-[#791f4c2a] font-semibold hover:opacity-90 dark:border-0 dark:bg-[#161515]" +
-              (scroll
-                ? " fixed top-0 right-1 mt-2 ml-auto px-1 py-2 text-sm md:top-auto md:right-8 md:bottom-11 dark:bg-[#161515]"
-                : " top-0 left-0")
+              "dark:text-background bg-background text-primaryText fixed right-10 bottom-16 z-50 mt-2 ml-auto flex h-13 w-13 cursor-pointer items-center justify-center rounded-full border border-[#791f4c2a] px-1 py-2 text-sm font-semibold hover:opacity-90 md:top-auto md:right-8 md:bottom-11 dark:border-0 dark:bg-[#161515]"
             }
           >
             {theme === "dark" ? (
@@ -191,27 +212,65 @@ export default function Navbar() {
           <div
             onClick={(e) => e.stopPropagation()}
             className={
-              "flex h-12 items-center gap-5 transition-all duration-700 ease-in-out md:gap-8 " +
+              "relative flex h-12 items-center justify-between gap-4 transition-all duration-700 ease-in-out md:w-62 md:gap-2 " +
               (scroll
-                ? "inScroll:translate-x-48 inScroll:backdrop-blur-none hidden backdrop-blur-[1px] md:flex"
-                : "")
+                ? " inScroll:translate-x-68 inScroll:backdrop-blur-none hidden backdrop-blur-[1px] md:flex"
+                : "w-80")
             }
           >
+            {totalUnread > 0 && (
+              <motion.span
+                className={
+                  "absolute top-0 left-6 " +
+                  (bouncingMsgs ? "animate-bounce" : "") +
+                  " rounded-full bg-[#f54669] px-1 text-xs text-white"
+                }
+              >
+                {totalUnread > 99 ? "99+" : totalUnread}
+              </motion.span>
+            )}
+            <motion.div
+              onHoverStart={() => setBouncingMsgs(false)}
+              transition={{
+                type: "tween",
+                stiffness: 200,
+                damping: 15,
+                duration: 0.4,
+              }}
+              whileHover={{ rotate: -90 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Link to={userToken ? `/chats` : "/login"}>
+                <MessagesIcon
+                  width={40}
+                  className="dark:fill-background mb-1 w-10 -rotate-45 cursor-pointer"
+                />
+              </Link>
+            </motion.div>
             <div className="dark:text-background">
               <div
                 className="relative cursor-pointer"
                 onClick={() => setOpen(!open)}
               >
-                <div className="transition-transform duration-200 hover:scale-110">
+                <motion.div
+                  className="transition-transform duration-200 hover:scale-110"
+                  onHoverStart={() => setBouncing(false)}
+                >
                   <NotificationIcon
                     width={35}
                     onClick={handleNotification}
                     className="dark:fill-background"
                   />
-                </div>
+                </motion.div>
 
                 {unread > 0 && (
-                  <span className="text-background absolute -top-1 -right-1 flex animate-bounce items-center justify-center rounded-full bg-[#f54669] px-1 text-xs">
+                  <span
+                    className={
+                      "text-background absolute -top-1 -right-1 flex items-center justify-center rounded-full bg-[#f54669] px-1 " +
+                      (bouncing ? "animate-bounce" : "") +
+                      " text-xs"
+                    }
+                  >
                     {unread}
                   </span>
                 )}
@@ -243,7 +302,7 @@ export default function Navbar() {
 
             <Link to="/login" onClick={userToken ? loggout : undefined}>
               <LoginIcon
-                width={40}
+                width={43}
                 className={`pt-1 ${userToken ? "stroke-[#da1b41]" : "stroke-[#333]"} `}
               />
             </Link>
