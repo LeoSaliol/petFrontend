@@ -96,7 +96,7 @@ export const CreatePost = () => {
             </div>
           </div>
           <button
-            className="absolute bottom-40 z-20 mt-5 w-1/4 cursor-pointer rounded-lg bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold text-white transition hover:opacity-90 md:bottom-10"
+            className="from-formColorLight to-formColorDark absolute bottom-40 z-20 mt-5 w-1/4 cursor-pointer rounded-lg bg-linear-to-r py-2 font-semibold text-white transition hover:opacity-90 md:bottom-10"
             onClick={getCroppedImage}
           >
             Recortar Imagen
@@ -122,12 +122,12 @@ export const CreatePost = () => {
           onChange={(e) => setContent(e.target.value)}
           type="text"
           placeholder="Descripción de la publicación"
-          className="mx-auto w-[95%] border-b border-[#FAB3A9] py-2 focus:border-[#ED6B86] focus:outline-none"
+          className="border-formColorLight focus:border-formColorDark mx-auto w-[95%] border-b py-2 focus:outline-none"
         />
 
         <button
           type="submit"
-          className="cursor-pointer rounded-lg bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold text-white transition hover:opacity-70"
+          className="from-formColorLight to-formColorDark cursor-pointer rounded-lg bg-linear-to-r py-2 font-semibold text-white transition hover:opacity-70"
         >
           {post ? "Actualizar Publicación" : "Crear Publicación"}
         </button>

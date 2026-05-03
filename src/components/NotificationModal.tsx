@@ -32,7 +32,7 @@ export const NotificationModal = ({
   selectedPostId: Perfil | null;
 }) => {
   return (
-    <div className="dark:text-background bg-background absolute right-0 z-10 mt-2 flex w-96 flex-col gap-1 overflow-hidden rounded-md shadow-xl dark:bg-[#1b1a1a]">
+    <div className="dark:text-primaryWhite bg-primaryWhite dark:bg-bgBlack absolute right-0 z-10 mt-2 flex w-96 flex-col gap-1 overflow-hidden rounded-md shadow-xl">
       {notifications.length === 0 ? (
         <p className="p-4 text-gray-500">No tienes notificaciones</p>
       ) : (
@@ -46,7 +46,7 @@ export const NotificationModal = ({
               }
             }}
             key={n.id}
-            className={`flex w-full items-center gap-3 px-5 py-3 transition ${!n.isRead ? "bg-gray-100 dark:bg-[#0c0a0c]" : "bg-inherit"} text-md hover:bg-[#c911391a] dark:hover:bg-gray-900`}
+            className={`flex w-full items-center gap-3 px-5 py-3 transition ${!n.isRead ? "bg-gray-100 dark:bg-[#0c0a0c]" : "bg-inherit"} text-md hover:bg-[#c911391a] dark:hover:bg-pink-900`}
           >
             <Link
               to={
@@ -89,7 +89,7 @@ export const NotificationModal = ({
                     }, 500);
                   }
                 }}
-                className="overflow-hidden text-xs text-blue-500 hover:text-blue-700"
+                className="overflow-hidden text-xs text-pink-500 hover:text-pink-700"
               >
                 New
               </div>
@@ -102,7 +102,7 @@ export const NotificationModal = ({
         onClick={() => {
           setShowNotifications(false);
         }}
-        className="text-background color-change-2x mt-1 cursor-pointer rounded-b-md py-2 text-center font-semibold transition hover:bg-[#c911391a] dark:bg-inherit dark:hover:bg-gray-800"
+        className="dark:text-primaryWhite color-change-2x dark:hover:text-primaryWhite mt-1 cursor-pointer rounded-b-md py-2 text-center font-semibold transition hover:bg-[#c911391a] dark:hover:bg-pink-800"
       >
         Ver todas la notificaciones
       </Link>

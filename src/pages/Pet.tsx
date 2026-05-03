@@ -125,7 +125,7 @@ const Pet = () => {
             </div>
           </div>
           <button
-            className="absolute bottom-40 z-20 mt-5 w-1/4 cursor-pointer rounded-lg bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold text-white transition hover:opacity-90 md:bottom-25"
+            className="from-formColorLight to-formColorDark absolute bottom-40 z-20 mt-5 w-1/4 cursor-pointer rounded-lg bg-linear-to-r py-2 font-semibold text-white transition hover:opacity-90 md:bottom-25"
             onClick={getCroppedImage}
           >
             Recortar Imagen
@@ -186,7 +186,7 @@ const Pet = () => {
           </div>
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold text-white transition hover:opacity-70"
+            className="from-formColorLight to-formColorDark w-full cursor-pointer rounded-full bg-linear-to-r py-2 font-semibold text-white transition hover:opacity-70"
           >
             {petProps ? "Actualizar mascota" : "Crear mascota"}
           </button>

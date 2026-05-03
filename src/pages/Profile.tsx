@@ -121,7 +121,9 @@ export const Profile = () => {
 
   const handleOpenChat = () => {
     openConversation(perfilData.ownerId); // emite el socket
-    navigate("/chats", { state: { targetUserId: perfilData.ownerId } }); // navega con el id
+    navigate("/chats", {
+      state: { targetUserId: perfilData.ownerId, pet: perfilData },
+    }); // navega con el id
   };
   return (
     <>
@@ -136,7 +138,7 @@ export const Profile = () => {
         <img
           src={perfilData?.image}
           alt=""
-          className="h-40 w-40 rounded-full object-cover md:h-75 md:w-75"
+          className="h-40 w-40 rounded-full object-cover md:h-55 md:w-55"
         />
         <div className="flex flex-1 flex-col gap-4">
           <h1 className="text-xl font-bold md:text-2xl">{perfilData?.name}</h1>
@@ -150,7 +152,7 @@ export const Profile = () => {
         <div className="item-center absolute inset-x-0 bottom-[-3.3rem] mx-auto flex w-fit gap-3 md:relative md:bottom-0 md:left-0">
           <button
             onClick={handleFollow}
-            className="text-background w-36 cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold transition hover:opacity-70"
+            className="text-primaryWhite from-formColorLight to-formColorDark w-40 cursor-pointer rounded-full bg-linear-to-r py-2 font-semibold transition hover:opacity-70"
           >
             {perfilData?.isFollowing ? (
               "Siguiendo"
@@ -160,7 +162,7 @@ export const Profile = () => {
                 className="flex h-10 items-center justify-center gap-2"
               >
                 Editar perfil
-                <EditIcon className="stroke-background mr-1 inline-block h-7 w-6" />
+                <EditIcon className="stroke-primaryWhite mr-1 inline-block h-7 w-6" />
               </div>
             ) : (
               "Seguir"
@@ -168,7 +170,7 @@ export const Profile = () => {
           </button>
           {pet && perfilData?.id !== pet.id && (
             <button
-              className="w-36 cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] font-semibold transition hover:opacity-70"
+              className="from-formColorLight to-formColorDark w-40 cursor-pointer rounded-full bg-linear-to-r font-semibold transition hover:opacity-70"
               onClick={handleOpenChat}
             >
               Enviar Mensaje
@@ -176,14 +178,14 @@ export const Profile = () => {
           )}
         </div>
       </header>
-      <main className="mt-20 mb-20 grid place-items-center gap-5 sm:grid-cols-1 md:mt-10 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+      <main className="mt-20 grid place-items-center gap-5 sm:grid-cols-1 md:mt-10 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
         {perfilData && perfilData.posts && perfilData.posts.length > 0 ? (
           perfilData.posts.map((post: Post) => (
             <div key={post.id} onClick={() => handlePost(post)}>
               <img
                 src={post.image}
                 alt=""
-                className="z-10 h-120 w-full cursor-pointer rounded-sm object-cover shadow-lg transition hover:opacity-70"
+                className="z-10 h-120 w-full cursor-pointer rounded-sm object-cover shadow-lg transition hover:opacity-40"
               />
             </div>
           ))

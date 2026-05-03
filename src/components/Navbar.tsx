@@ -139,20 +139,23 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           <Link
             to="/"
-            className={`font-title text-primary text-[2.2rem] ${scroll ? "inScroll:-translate-x-48 inScroll:backdrop-blur-none backdrop-blur-[1px] 2xl:text-[2rem]" : ""} hidden transition-all duration-700 ease-in-out md:block`}
+            className={`font-title text-primaryBlack dark:text-primaryWhite text-[2.2rem] ${scroll ? "inScroll:-translate-x-48 inScroll:backdrop-blur-none backdrop-blur-[1px] 2xl:text-[2rem]" : ""} hidden transition-all duration-700 ease-in-out md:block`}
           >
             Michigram
           </Link>
           {scroll ? (
-            <div className="bg-background fixed right-0 bottom-0 left-0 flex h-20 w-screen items-center justify-between p-5 transition-all duration-700 ease-in-out md:hidden md:bg-inherit dark:bg-[#0e0e0f]">
-              <Link to="/" className="font-title text-primary text-[2.2rem]">
+            <div className="bg-primaryWhite fixed right-0 bottom-0 left-0 flex h-20 w-screen items-center justify-between p-5 transition-all duration-700 ease-in-out md:hidden md:bg-inherit dark:bg-[#0e0e0f]">
+              <Link
+                to="/"
+                className="font-title text-primaryBlack text-[2.2rem]"
+              >
                 M
               </Link>
               <Link to="/notifications">
                 <NotificationIcon
                   width={35}
                   onClick={handleNotification}
-                  className="dark:fill-background cursor-pointer"
+                  className="dark:fill-primaryWhite cursor-pointer"
                 />
               </Link>
               <Link to={userToken ? `/chats` : "/login"}>
@@ -163,7 +166,7 @@ export default function Navbar() {
                 )}
                 <MessagesIcon
                   width={42}
-                  className="dark:fill-background mb-2 -rotate-140 cursor-pointer md:mb-0"
+                  className="dark:fill-primaryWhite mb-2 -rotate-140 cursor-pointer md:mb-0"
                 />
               </Link>
               {userToken && <CreatePostButton clasN=" " />}
@@ -182,14 +185,14 @@ export default function Navbar() {
               <Link to="/login" onClick={userToken ? loggout : undefined}>
                 <LoginIcon
                   width={47}
-                  className={`pt-1 ${userToken ? "stroke-[#da1b41]" : "stroke-[#333]"} `}
+                  className={`pt-1 ${userToken ? "stroke-redPink" : "stroke-[#333]"} `}
                 />
               </Link>
             </div>
           ) : (
             <Link
               to="/"
-              className="font-title text-primary text-[2.2rem] transition-all duration-700 ease-in-out md:hidden"
+              className="font-title text-primaryBlack text-[2.2rem] transition-all duration-700 ease-in-out md:hidden"
             >
               M
             </Link>
@@ -200,7 +203,7 @@ export default function Navbar() {
             whileTap={{ scale: 0.95 }}
             onClick={toggleTheme}
             className={
-              "dark:text-background bg-background text-primaryText fixed right-10 bottom-16 z-50 mt-2 ml-auto flex h-13 w-13 cursor-pointer items-center justify-center rounded-full border border-[#791f4c2a] px-1 py-2 text-sm font-semibold hover:opacity-90 md:top-auto md:right-8 md:bottom-11 dark:border-0 dark:bg-[#161515]"
+              "dark:text-primaryWhite bg-primaryWhite text-primaryBlack fixed right-10 bottom-16 z-50 mt-2 ml-auto flex h-13 w-13 cursor-pointer items-center justify-center rounded-full border border-[#791f4c2a] px-1 py-2 text-sm font-semibold hover:opacity-90 md:top-auto md:right-8 md:bottom-11 dark:border-0 dark:bg-[#161515]"
             }
           >
             {theme === "dark" ? (
@@ -223,7 +226,7 @@ export default function Navbar() {
                 className={
                   "absolute top-0 left-6 " +
                   (bouncingMsgs ? "animate-bounce" : "") +
-                  " rounded-full bg-[#f54669] px-1 text-xs text-white"
+                  " bg-pinkNotify rounded-full px-1 text-xs text-white"
                 }
               >
                 {totalUnread > 99 ? "99+" : totalUnread}
@@ -241,13 +244,10 @@ export default function Navbar() {
               whileTap={{ scale: 0.95 }}
             >
               <Link to={userToken ? `/chats` : "/login"}>
-                <MessagesIcon
-                  width={40}
-                  className="dark:fill-background mb-1 w-10 -rotate-45 cursor-pointer"
-                />
+                <MessagesIcon className="dark:fill-primaryWhite mb-1 w-8 -rotate-45 cursor-pointer dark:w-10" />
               </Link>
             </motion.div>
-            <div className="dark:text-background">
+            <div className="dark:text-primaryWhite">
               <div
                 className="relative cursor-pointer"
                 onClick={() => setOpen(!open)}
@@ -259,14 +259,14 @@ export default function Navbar() {
                   <NotificationIcon
                     width={35}
                     onClick={handleNotification}
-                    className="dark:fill-background"
+                    className="dark:fill-primaryWhite"
                   />
                 </motion.div>
 
                 {unread > 0 && (
                   <span
                     className={
-                      "text-background absolute -top-1 -right-1 flex items-center justify-center rounded-full bg-[#f54669] px-1 " +
+                      "text-primaryWhite bg-pinkNotify absolute -top-1 -right-1 items-center justify-center rounded-full px-1 " +
                       (bouncing ? "animate-bounce" : "") +
                       " text-xs"
                     }
@@ -303,7 +303,7 @@ export default function Navbar() {
             <Link to="/login" onClick={userToken ? loggout : undefined}>
               <LoginIcon
                 width={43}
-                className={`pt-1 ${userToken ? "stroke-[#da1b41]" : "stroke-[#333]"} `}
+                className={`pt-1 ${userToken ? "stroke-redPink" : "stroke-[#333]"} `}
               />
             </Link>
           </div>

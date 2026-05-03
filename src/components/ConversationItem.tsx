@@ -24,13 +24,13 @@ export const ConversationItem = ({
   return (
     <button
       onClick={onClick}
-      className={`flex w-full items-center gap-3 border-r-2 px-4 py-3 text-left transition-colors ${isActive ? "border-amber-400 bg-amber-50 dark:bg-amber-950/30" : "border-transparent hover:bg-neutral-50 dark:hover:bg-neutral-800/50"}`}
+      className={`flex w-full cursor-pointer items-center gap-3 border-r-2 px-4 py-3 text-left transition-colors ${isActive ? "border-formColorDark bg-[#ed6b901a] dark:bg-pink-950/30" : "border-transparent hover:bg-[#ed6b9010] dark:hover:bg-neutral-800/50"} ${conversation.unreadCount > 0 ? "bg-[#ed6b901a] dark:bg-pink-950/30" : ""} `}
     >
       <Avatar user={otherUser} isOnline={isOnline} size="md" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <span
-            className={`truncate text-sm font-medium ${isActive ? "text-amber-700 dark:text-amber-300" : "text-neutral-800 dark:text-neutral-100"}`}
+            className={`truncate text-sm font-medium ${isActive ? "text-pink-700 dark:text-pink-200" : "text-neutral-800 dark:text-neutral-100"}`}
           >
             {otherUser.name}
           </span>
@@ -49,7 +49,7 @@ export const ConversationItem = ({
               : "Sin mensajes"}
           </p>
           {conversation.unreadCount > 0 && (
-            <span className="flex h-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] font-semibold text-white">
+            <span className="bg-formColorDark flex h-4.5 min-w-4.5 shrink-0 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white">
               {conversation.unreadCount > 99 ? "99+" : conversation.unreadCount}
             </span>
           )}

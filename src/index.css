@@ -6,11 +6,16 @@
 @theme {
   --font-title: Kavoon, serif;
   --font-content: Bricolage Grotesque, sans-serif;
-  --color-primaryText: #0b090a;
-  --color-background: #fff9fa;
+  --color-primaryBlack: #0b090a;
+  --color-primaryWhite: #fff9fa;
   --color-likeColor: #ed6b86;
+  --color-pinkNotify: #f54669;
+  --color-formColorLight: #fab3a9;
+  --color-formColorDark: #ed6b90;
+  --color-redPink: #da1b41;
+  --color-bgBlack: #1b1a1a;
+  --color-bgWhite: #f8f8f8;
   --breakpoint-md: 1100px;
-  /* --breakpoint-inScroll: 1550px; */
   --breakpoint-inScroll: 1820px;
 }
 
@@ -24,7 +29,13 @@
     transform: translateY(0);
   }
 }
+.borderPinks {
+  border: 1px double var(--color-formColorLight);
 
+  border-right-color: var(--color-formColorDark);
+  border-top-color: var(--color-formColorLight);
+  border-bottom-color: var(--color-formColorDark);
+}
 .animate-fadeIn {
   animation: fadeIn 0.3s ease;
 }
@@ -32,7 +43,17 @@
 .custom-scrollbar::-webkit-scrollbar {
   width: 7px;
 }
+.dark .custom-scrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
 
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #52525b; /* zinc-600 */
+  border-radius: 999px;
+}
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }

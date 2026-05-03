@@ -27,7 +27,7 @@ export const ConfigPost = ({
         <DotsIcon className="h-6 w-6 transform cursor-pointer stroke-3 transition-all duration-400 group-hover:scale-110 dark:fill-pink-200" />
 
         <div
-          className={`bg-primaryText text-background ${classGroup ? classGroup : "right-6 bottom-4"} absolute translate-x-[-9] overflow-hidden rounded-md text-sm whitespace-nowrap opacity-0 shadow-lg transition-all duration-400 group-hover:translate-x-2 group-hover:opacity-100 dark:bg-[#1d181ace]`}
+          className={`bg-primaryBlack text-primaryWhite ${classGroup ? classGroup : "right-6 bottom-4"} absolute translate-x-[-9] overflow-hidden rounded-md text-sm whitespace-nowrap opacity-0 shadow-lg transition-all duration-400 group-hover:translate-x-2 group-hover:opacity-100 dark:bg-[#1d181ace]`}
         >
           <li className="flex flex-col">
             <button

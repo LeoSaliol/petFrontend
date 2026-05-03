@@ -27,6 +27,7 @@ export default function PostCard({
   const [openModal, setOpenModal] = useState<boolean | null>(false);
   const [selectedPostId, setSelectedPostId] = useState<Perfil | null>(null);
   const navigate = useNavigate();
+  const [newComment, setNewComment] = useState<string | null>(null);
   const { pet, userToken } = useAuth();
 
   const openCommentModal = (post: Perfil) => {
@@ -74,7 +75,7 @@ export default function PostCard({
       )}
       <div
         key={post.id}
-        className="mt-11 mb-24 w-full rounded-xl border border-[#b6a5ad11] md:mb-6 md:py-4"
+        className="z-1 mt-11 mb-24 w-full rounded-xl border border-[#b6a5ad11] md:mb-6 md:py-4"
       >
         <div className="mx-2 flex items-center gap-1 p-2 py-6 md:mx-3 md:p-1">
           <Link to={`/profile/${post.pet.id}`}>
@@ -105,7 +106,7 @@ export default function PostCard({
               onClick={() => handleLike(post.id, post.pet.id)}
             >
               <HeartIcon
-                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post.likedByUser ? "fill-likeColor stroke-likeColor" : "stroke-primaryText dark:stroke-background fill-background dark:fill-none"} `}
+                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post.likedByUser ? "fill-likeColor stroke-likeColor" : "stroke-primaryBlack dark:stroke-primaryWhite fill-primaryWhite dark:fill-none"} `}
               />
 
               <span className="">{post._count.likes}</span>
@@ -113,7 +114,7 @@ export default function PostCard({
 
             <span className="flex items-center gap-2">
               <CommentIcon
-                className="dark:stroke-background h-6 w-6 cursor-pointer"
+                className="dark:stroke-primaryWhite h-6 w-6 cursor-pointer"
                 onClick={() =>
                   openCommentModal({
                     id: post.pet.id,
@@ -142,21 +143,26 @@ export default function PostCard({
             )}
           </div>
 
-          <div className="items-center gap-2 md:flex md:text-lg">
-            <Link to={`/profile/${post.pet.id}`}>
-              <span className="font-semibold">{post.pet.name}</span>
+          <div className="gap-2 md:flex md:text-lg">
+            <Link to={`/profile/${post.pet.id}`} className="font-semibold">
+              {post.pet.name}
             </Link>
-            <p className="ml-1 text-sm md:ml-0 md:text-lg">{post.content}</p>
+            <p className="ml-1 text-sm font-light md:ml-0 md:pt-0.75 md:text-[17px]">
+              {post.content}
+            </p>
           </div>
-          {post.newComment && (
-            <p className="md:text-md animate-fadeIn text-md ml-2 py-1">
-              <span className="font-semibold">{pet?.name} </span>{" "}
-              {post.newComment}
+          {newComment && (
+            <p className="animate-fadeIn text-md ml-2 py-1 font-light md:text-[15px]">
+              <span className="font-semibold">{pet?.name} </span> {newComment}
             </p>
           )}
           <form
             className="mt-3"
-            onSubmit={(e) => handleComment(e, post.id, post.pet.id)}
+            onSubmit={(e) => {
+              e.preventDefault();
+              setNewComment(e.currentTarget.comment.value);
+              handleComment(e, post.id, post.pet.id);
+            }}
           >
             <input
               type="text"
@@ -170,148 +176,3 @@ export default function PostCard({
     </>
   );
 }
-
-// import { useState } from "react";
-// import { CommentIcon } from "../icons/CommentIcon";
-// import { HeartIcon } from "../icons/LikeIcon";
-// import { timeAgoShort } from "../utils/time";
-// import { useAuth } from "../context/useAuth";
-// import { CommentModal } from "./CommentModal";
-// import type { Post } from "../types";
-// import { Link, useNavigate } from "react-router-dom";
-// import { ConfigPost } from "./ConfigPost";
-// import { deletePost } from "../api/axios";
-// import { toast, Toaster } from "sonner";
-
-// export default function PostCard({
-//   post,
-//   handleLike,
-//   handleComment,
-// }: {
-//   post: Post;
-//   handleLike: (postId: number, petId: number) => void;
-//   handleComment: (
-//     e: React.FormEvent<HTMLFormElement>,
-//     postId: number,
-//     petId: number,
-//   ) => void;
-// }) {
-//   const [openModal, setOpenModal] = useState(false);
-//   const navigate = useNavigate();
-//   const { pet, userToken } = useAuth();
-
-//   const openCommentModal = () => {
-//     if (!userToken) {
-//       navigate("/login");
-//       return;
-//     }
-//     setOpenModal(true);
-//   };
-
-//   const handleDelete = async (postId: number) => {
-//     try {
-//       const res = await deletePost(postId);
-//       if (res === "Post deleted") {
-//         toast.success("Post eliminado correctamente");
-//         navigate(0);
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   const handleEdit = (post: Post) => {
-//     navigate("/create-post", {
-//       state: {
-//         post: {
-//           id: post.id,
-//           content: post.content,
-//           image: post.image,
-//         },
-//       },
-//     });
-//   };
-
-//   return (
-//     <>
-//       <Toaster position="top-center" richColors />
-
-//       {openModal && (
-//         <CommentModal post={post} closeModal={() => setOpenModal(false)} />
-//       )}
-
-//       <div className="mt-11 mb-24 w-full rounded-xl border border-[#b6a5ad11] md:mb-6 md:py-4">
-//         <div className="flex items-center gap-1 p-2 py-6 md:p-1">
-//           <Link to={`/profile/${post.pet.id}`}>
-//             <img
-//               src={post.pet.image}
-//               className="mx-3 h-9 w-9 rounded-full object-cover"
-//             />
-//           </Link>
-
-//           <Link to={`/profile/${post.pet.id}`}>
-//             <span>{post.pet.name}</span>
-//           </Link>
-
-//           <span className="ml-auto text-xs text-[#a58e99]">
-//             {timeAgoShort(post.createdAt)}
-//           </span>
-//         </div>
-
-//         <img src={post.image} className="mx-auto w-[90%] rounded-md" />
-
-//         <div className="mx-4 p-4">
-//           <div className="mb-2 flex items-center gap-4">
-//             {/* LIKE */}
-//             <span
-//               onClick={() => handleLike(post.id, post.pet.id)}
-//               className="flex items-center gap-1"
-//             >
-//               <HeartIcon
-//                 className={`h-7 w-7 cursor-pointer ${
-//                   post.likedByUser ? "fill-red-400" : ""
-//                 }`}
-//               />
-//               {post._count.likes}
-//             </span>
-
-//             {/* COMMENT */}
-//             <span
-//               className="flex cursor-pointer items-center gap-2"
-//               onClick={openCommentModal}
-//             >
-//               <CommentIcon className="h-6 w-6" />
-//               {post._count.comments}
-//             </span>
-
-//             {/* CONFIG */}
-//             {post.pet.id === userToken && (
-//               <ConfigPost
-//                 handleDelete={() => handleDelete(post.id)}
-//                 handleEdit={() => handleEdit(post)}
-//               />
-//             )}
-//           </div>
-
-//           <div>
-//             <span className="font-semibold">{post.pet.name}</span>
-//             <span className="ml-2">{post.content}</span>
-//           </div>
-
-//           {/* COMENTAR */}
-//           <form
-//             className="mt-3"
-//             onSubmit={(e) => handleComment(e, post.id, post.pet.id)}
-//           >
-//             <input
-//               type="text"
-//               name="comment"
-//               placeholder="Escribe un comentario..."
-//               className="w-full rounded-lg border px-3 py-2 text-sm"
-//             />
-//           </form>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }

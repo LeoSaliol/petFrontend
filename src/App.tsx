@@ -6,7 +6,7 @@ interface Props {
 function App({ children }: Props) {
   useNotifications();
   return (
-    <div className="bg-background dark:bg-primaryText text-primaryText dark:text-background">
+    <div className="bg-primaryWhite dark:bg-primaryBlack text-primaryBlack dark:text-primaryWhite">
       <MainLayout children={children} />
     </div>
   );

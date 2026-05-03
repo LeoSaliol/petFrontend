@@ -24,6 +24,7 @@ export const Chat = () => {
   const hasOpen = useRef(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(2);
+  const pet = location.state?.pet;
 
   useEffect(() => {
     const targetUserId = location.state?.targetUserId;
@@ -51,7 +52,7 @@ export const Chat = () => {
   )?.user;
 
   return (
-    <div className="flex h-[80vh] overflow-hidden rounded-2xl border border-neutral-100 bg-white shadow-sm dark:border-neutral-800 dark:bg-[#161515]">
+    <div className="dark:bg-bgBlack bg-bgWhite flex h-[80vh] overflow-hidden rounded-2xl border border-neutral-100 shadow-sm dark:border-neutral-800">
       {/* Sidebar  */}
       <div className="flex shrink-0 flex-col border-r border-neutral-100 md:w-72 dark:border-neutral-800">
         <div className="px-4 pt-4 pb-3">
@@ -110,13 +111,14 @@ export const Chat = () => {
       {/* Área de los  mensajes */}
       {loadingConv ? (
         <div className="flex flex-1 items-center justify-center">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
+          <div className="border--400 h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
         </div>
       ) : activeConversation ? (
         <MessageWindow
           conversation={activeConversation}
           messages={messages}
           currentUserId={currentUserId}
+          pet={pet}
           isOnline={otherUser ? onlineUsers.includes(otherUser.id) : false}
           onSend={(content) => sendMessage(activeConversation.id, content)}
           onLoadMore={handleLoadMore}

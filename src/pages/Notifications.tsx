@@ -28,15 +28,17 @@ export const Notifications = () => {
   const groupedNotifications = groupNotifications(notifications);
 
   return (
-    <>
-      <h1 className="mt-8 text-2xl font-bold">Notificaciones</h1>
-      <div>
+    <div className="dark:bg-bgBlack rounded-md px-10 py-6">
+      <h1 className="text-2xl font-bold">Notificaciones</h1>
+      <div className="">
         <ul className="mt-4">
           {groupedNotifications.map((n) => (
             <div
               key={n.id}
               className={`p-2 text-sm transition ${
-                !n.isRead ? "hover:bg-[#c911391a] dark:hover:bg-gray-900" : ""
+                !n.isRead
+                  ? "hover:bg-[#c911391a] dark:hover:bg-gray-900"
+                  : "dark:bg-bgBlack"
               }`}
               onMouseEnter={() => {
                 if (!n.isRead) {
@@ -60,7 +62,7 @@ export const Notifications = () => {
                   </Link>{" "}
                   <span className="">{formatNotification(n).secondary}</span>{" "}
                   {formatNotification(n).others.length > 0 && (
-                    <div className="absolute top-6 left-0 z-50 hidden w-48 rounded-lg bg-black p-2 text-xs shadow-lg group-hover:block">
+                    <div className="absolute top-6 left-0 z-50 hidden w-48 rounded-lg p-2 text-xs shadow-lg group-hover:block">
                       {formatNotification(n).others.map((actor: any) => (
                         <Link
                           key={actor.id}
@@ -82,6 +84,6 @@ export const Notifications = () => {
           ))}
         </ul>
       </div>
-    </>
+    </div>
   );
 };

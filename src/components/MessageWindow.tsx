@@ -12,6 +12,7 @@ export const MessageWindow = ({
   isOnline,
   onSend,
   onLoadMore,
+  pet,
 }: {
   conversation: Conversation;
   messages: Message[];
@@ -19,8 +20,14 @@ export const MessageWindow = ({
   isOnline: boolean;
   onSend: (content: string) => void;
   onLoadMore: () => void;
+  pet?: {
+    id: number;
+    name: string;
+    image: string;
+  };
 }) => {
   const [input, setInput] = useState("");
+  const [petPerfil, setPetPerfil] = useState<typeof pet | null>(pet ?? null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const other = conversation.participants.find(
     (p) => p.user.id !== currentUserId,
@@ -53,26 +60,36 @@ export const MessageWindow = ({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center gap-3 border-b border-neutral-100 bg-white px-5 py-3.5 dark:border-neutral-800 dark:bg-neutral-900">
-        <Link to={`/profile/${other.pets[0].id}`}>
-          <Avatar user={other} isOnline={isOnline} size="md" />
+        <Link to={`/profile/${petPerfil ? petPerfil.id : other.pets[0]?.id}`}>
+          <Avatar
+            user={{
+              id: petPerfil ? petPerfil.id : other.pets[0]?.id,
+              name: petPerfil ? petPerfil.name : other.name,
+              avatar: petPerfil ? petPerfil.image : other.pets[0]?.image,
+              pets: other.pets || null,
+              lastSeen: null,
+            }}
+            isOnline={isOnline}
+            size="md"
+          />
         </Link>
         <div>
           <Link
-            to={`/profile/${other.pets[0].id}`}
+            to={`/profile/${petPerfil ? petPerfil.id : other.pets[0]?.id}`}
             className="text-md font-semibold text-neutral-800 capitalize dark:text-neutral-100"
           >
             {other.name}{" "}
             <span className="ml-1 text-[13px] text-neutral-400 dark:text-neutral-400">
-              {other.pets[0]?.name}
+              {petPerfil ? petPerfil.name : other.pets[0]?.name}
             </span>
           </Link>
-          <p className="text-xs text-neutral-400">
+          <div className="text-xs text-neutral-400">
             {isOnline ? (
               <span className="text-emerald-500">En línea</span>
             ) : (
               <p>Ultima conexión: {timeAgoShort(other.lastSeen!)} </p>
             )}
-          </p>
+          </div>
         </div>
         <div className="ml-auto">X</div>
       </div>
@@ -80,28 +97,34 @@ export const MessageWindow = ({
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto bg-neutral-50 px-5 py-4 dark:bg-neutral-950">
         <button
           onClick={onLoadMore}
-          className="self-center py-1 text-xs text-amber-500 transition-colors hover:text-amber-600"
+          className="self-center py-1 text-xs text-pink-500 transition-colors hover:text-pink-600"
         >
           Cargar mensajes anteriores
         </button>
-        {messages.map((msg, i) => {
-          const isMine = msg.senderId === currentUserId;
-          const nextMsg = messages[i + 1];
-          const showAvatar =
-            !isMine && (!nextMsg || nextMsg.senderId !== msg.senderId);
-          return (
-            <MessageBubble
-              key={msg.id}
-              content={msg.content}
-              createdAt={msg.createdAt}
-              isMine={isMine}
-              isRead={msg.isRead}
-              showAvatar={showAvatar}
-              sender={{ id: other.id, name: other.name, avatar: other.avatar }}
-              pet={other.pets[0]}
-            />
-          );
-        })}
+        <div className="custom-scrollbar min-h-0 overflow-y-auto">
+          {messages.map((msg, i) => {
+            const isMine = msg.senderId === currentUserId;
+            const nextMsg = messages[i + 1];
+            const showAvatar =
+              !isMine && (!nextMsg || nextMsg.senderId !== msg.senderId);
+            return (
+              <MessageBubble
+                key={msg.id}
+                content={msg.content}
+                createdAt={msg.createdAt}
+                isMine={isMine}
+                isRead={msg.isRead}
+                showAvatar={showAvatar}
+                sender={{
+                  id: other.id,
+                  name: other.name,
+                  avatar: other.avatar,
+                }}
+                pet={petPerfil || other.pets[0]}
+              />
+            );
+          })}
+        </div>
         <div ref={bottomRef} />
       </div>
 
@@ -118,7 +141,7 @@ export const MessageWindow = ({
           <button
             onClick={handleSend}
             disabled={!input.trim()}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-400 transition-all hover:bg-amber-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+            className="bg-formColorDark hover:bg-formColorLight flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-xl transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <svg
               width="14"
@@ -135,7 +158,7 @@ export const MessageWindow = ({
             </svg>
           </button>
         </div>
-        <p className="mt-1.5 text-center text-[10px] text-neutral-300 dark:text-neutral-600">
+        <p className="mt-1.5 text-center text-[10px] text-neutral-400 dark:text-neutral-600">
           Enter para enviar · Shift+Enter para nueva línea
         </p>
       </div>

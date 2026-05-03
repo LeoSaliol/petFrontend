@@ -176,7 +176,7 @@ export const CommentModal = ({
 
   return (
     <div
-      className="text-background fixed top-0 left-0 z-90 h-full w-full bg-[#0d0e0ff3] md:bg-[#34363471]"
+      className="text-primaryWhite fixed top-0 left-0 z-90 h-full w-full bg-[#0d0e0ff3] md:bg-[#34363471]"
       onClick={() => {
         closeModal();
       }}
@@ -240,14 +240,14 @@ export const CommentModal = ({
             >
               <HeartIcon
                 width={24}
-                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post?.likes.some((like: any) => like.petId === pet?.id) ? "fill-likeColor dark:stroke-likeColor" : "dark:stroke-background"} `}
+                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post?.likes.some((like: any) => like.petId === pet?.id) ? "fill-likeColor dark:stroke-likeColor" : "dark:stroke-primaryWhite"} `}
               />{" "}
               {post?._count.likes}
             </span>
             <span className="flex items-center gap-2">
               <CommentIcon
                 width={24}
-                className="dark:stroke-background h-6 w-6 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110"
+                className="dark:stroke-primaryWhite h-6 w-6 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110"
               />{" "}
               {pcomment?._count.comments}
             </span>

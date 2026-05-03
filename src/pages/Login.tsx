@@ -50,10 +50,10 @@ export const Login = () => {
   };
 
   return (
-    <main className="dark:bg-primaryText dark:text-background mx-auto flex min-h-screen w-full items-center justify-center">
+    <main className="dark:bg-primaryBlack dark:text-primaryWhite mx-auto flex min-h-screen w-full items-center justify-center">
       <Toaster position="top-center" richColors />
 
-      <div className="dark:bg-primaryText flex h-full w-[80%] flex-col items-center gap-16 rounded-lg border border-[#b6a5ad5e] bg-[#fab2a918] px-6 py-18 shadow-lg md:w-[45%] dark:border-[#ee73ac27]">
+      <div className="dark:bg-primaryBlack flex h-full w-[80%] flex-col items-center gap-16 rounded-lg border border-[#b6a5ad5e] bg-[#fab2a918] px-6 py-18 shadow-lg md:w-[45%] dark:border-[#ee73ac27]">
         <Link
           to="/"
           className="font-title text-primary mb-4 hidden text-[2.5rem] transition-all duration-700 ease-in-out md:block"
@@ -74,17 +74,17 @@ export const Login = () => {
             <input
               {...register("email")}
               type="email"
-              className={`w-full border-b border-gray-300 py-2 focus:border-gray-500 focus:outline-none ${errors.root ? "border-red-500" : ""} `}
+              className={`w-full border-b border-gray-300 py-2 focus:border-gray-500 focus:outline-none ${errors.root ? "border-redPink" : ""} `}
               placeholder="Email"
             />
             {errors.email && (
-              <p className="mt-1 text-red-500">{errors.email.message}</p>
+              <p className="text-redPink mt-1">{errors.email.message}</p>
             )}
           </div>
           <div
             className={
               "relative mb-5 flex w-full items-center gap-2 border-b border-gray-300 py-2 focus:border-gray-500 " +
-              (errors.root ? "border-red-500" : "")
+              (errors.root ? "border-redPink" : "")
             }
           >
             <input
@@ -106,19 +106,19 @@ export const Login = () => {
               />
             )}
             {errors.password && (
-              <p className="absolute bottom-[-1.9rem] text-red-500">
+              <p className="text-redPink absolute bottom-[-1.9rem]">
                 {errors.password.message}
               </p>
             )}
           </div>
-          <button className="w-full cursor-pointer rounded-full bg-linear-to-r from-[#FAB3A9] to-[#ED6B86] py-2 font-semibold text-white transition hover:opacity-90">
+          <button className="from-formColorLight to-formColorDark text-primaryWhite w-full cursor-pointer rounded-full bg-linear-to-r py-2 font-semibold transition hover:opacity-90">
             Login
           </button>
           <p className="mx-auto mt-20">
             No tienes cuenta?{" "}
             <Link
               to="/register"
-              className="cursor-pointer font-bold text-[#ED6B86]"
+              className="text-formColorDark cursor-pointer font-bold"
             >
               Regístrate
             </Link>
