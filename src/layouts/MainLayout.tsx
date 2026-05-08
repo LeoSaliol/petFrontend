@@ -1,16 +1,14 @@
-import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
-interface Props {
+interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export default function MainLayout({ children }: Props) {
+export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <div className="font-content mx-auto min-h-screen max-w-7xl p-4">
       <Navbar />
-      <Outlet />
-      <div className="mt-6">{children}</div>
+      <main className="mt-6">{children}</main>
     </div>
   );
 }

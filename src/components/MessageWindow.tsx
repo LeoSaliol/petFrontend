@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Conversation, Message } from "../types";
 import { MessageBubble } from "./MessageBubble";
 import { timeAgoShort } from "../utils/time";
-import { Avatar } from "./Avatar";
+import { Avatar } from "./ChatAvatar";
 import { Link } from "react-router-dom";
 
 export const MessageWindow = ({
@@ -27,20 +27,25 @@ export const MessageWindow = ({
   };
 }) => {
   const [input, setInput] = useState("");
-  const [petPerfil, setPetPerfil] = useState<typeof pet | null>(pet ?? null);
+  const [petPerfil] = useState<typeof pet | null>(pet ?? null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
   const other = conversation.participants.find(
     (p) => p.user.id !== currentUserId,
   )?.user;
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "instant" });
-  }, [conversation.id]);
+  const prevMessagesLength = useRef(messages.length);
 
-  // cuando llega un mensaje nuevo → scroll suave
   useEffect(() => {
     if (messages.length > 0) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current?.scrollIntoView({ behavior: "instant" });
     }
+  }, [conversation.id]);
+
+  useEffect(() => {
+    if (prevMessagesLength.current > messages.length && topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "auto" });
+    }
+    prevMessagesLength.current = messages.length;
   }, [messages.length]);
 
   const handleSend = () => {
@@ -76,7 +81,7 @@ export const MessageWindow = ({
         <div>
           <Link
             to={`/profile/${petPerfil ? petPerfil.id : other.pets[0]?.id}`}
-            className="text-md font-semibold text-neutral-800 capitalize dark:text-neutral-100"
+            className="text-md font-semibold capitalize text-neutral-800 dark:text-neutral-100"
           >
             {other.name}{" "}
             <span className="ml-1 text-[13px] text-neutral-400 dark:text-neutral-400">
@@ -95,6 +100,7 @@ export const MessageWindow = ({
       </div>
 
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto bg-neutral-50 px-5 py-4 dark:bg-neutral-950">
+        <div ref={topRef} />
         <button
           onClick={onLoadMore}
           className="self-center py-1 text-xs text-pink-500 transition-colors hover:text-pink-600"
@@ -116,11 +122,11 @@ export const MessageWindow = ({
                 isRead={msg.isRead}
                 showAvatar={showAvatar}
                 sender={{
-                  id: other.id,
-                  name: other.name,
-                  avatar: other.avatar,
+                  id: isMine ? currentUserId : other.id,
+                  name: isMine ? "Vos" : other.name,
+                  avatar: isMine ? (petPerfil?.image || other.avatar) : other.avatar,
                 }}
-                pet={petPerfil || other.pets[0]}
+                pet={isMine ? petPerfil || other.pets[0] : other.pets[0]}
               />
             );
           })}

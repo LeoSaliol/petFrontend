@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Kavoon&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kavoon&display=swap&font-display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap&font-display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -15,6 +15,7 @@
   --color-redPink: #da1b41;
   --color-bgBlack: #1b1a1a;
   --color-bgWhite: #f8f8f8;
+  --breakpoint-mobileChat: 800px;
   --breakpoint-md: 1100px;
   --breakpoint-inScroll: 1820px;
 }
@@ -87,4 +88,62 @@
   100% {
     color: #fab3a9;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+[data-sonner-toaster] [data-toaster] {
+  font-family: var(--font-content) !important;
+  border-radius: 12px;
+}
+
+[data-sonner-toaster] [data-styled="true"] {
+  border: none;
+}
+
+[data-sonner-toaster] [data-type="success"] {
+  background: linear-gradient(135deg, #ed6b86, #fab3a9) !important;
+  color: #0b090a !important;
+}
+
+[data-sonner-toaster] [data-type="error"] {
+  background: linear-gradient(135deg, #da1b41, #fab3a9) !important;
+  color: #fff9fa !important;
+}
+
+[data-sonner-toaster] [data-type="info"] {
+  background: linear-gradient(135deg, #1b1a1a, #3b3b3b) !important;
+  color: #fff9fa !important;
+  border: 1px solid #fab3a9 !important;
+}
+
+.dark [data-sonner-toaster] [data-type="info"] {
+  background: linear-gradient(135deg, #2a2a2a, #1b1a1a) !important;
+  border-color: #ed6b86 !important;
+}
+
+[data-sonner-toaster] [data-type="warning"] {
+  background: linear-gradient(135deg, #f54669, #ed6b86) !important;
+  color: #fff9fa !important;
 }

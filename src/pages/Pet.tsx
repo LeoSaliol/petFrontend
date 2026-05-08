@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { createPet, updatePet } from "../api/axios";
+import { petsService } from "../api";
 import { useEffect, useState } from "react";
 import { ButtonFile } from "../components/ButtonFile";
 import Cropper from "react-easy-crop";
@@ -8,7 +8,7 @@ import { toast, Toaster } from "sonner";
 import { useAuth } from "../context/useAuth";
 
 const Pet = () => {
-  const { petId, pet } = useAuth();
+  const { pet } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const petProps: { id: number; name: string; bio: string; image: string } =
@@ -39,12 +39,10 @@ const Pet = () => {
 
     if (petProps) {
       try {
-        const res = await updatePet(namepet, bio, file, petProps.id);
-        if (res === 200) {
-          toast.success("Perfil actualizado correctamente");
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          navigate(`/profile/${petProps.id}`);
-        }
+        await petsService.update(petProps.id, namepet, bio, file);
+        toast.success("Perfil actualizado correctamente");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        navigate(`/profile/${petProps.id}`);
       } catch (error) {
         console.error("Error updating pet:", error);
       }
@@ -54,12 +52,10 @@ const Pet = () => {
           toast.error("La imagen es obligatoria");
           return;
         }
-        const response = await createPet(namepet, bio, file);
-        if (response?.status === 201) {
-          toast.success("Perfil creado correctamente");
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          navigate("/");
-        }
+        await petsService.create({ name: namepet, bio, image: file as File });
+        toast.success("Perfil creado correctamente");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/");
       } catch (error) {
         console.error("Error creating pet:", error);
       }
@@ -95,7 +91,7 @@ const Pet = () => {
         navigate("/");
       }, 3000);
     }
-  }, [pet]);
+  }, [pet, navigate]);
   // if (petId !== null) {
   //   toast.error(
   //     "Ya tienes una mascota creada, solo puedes tener una mascota por cuenta",

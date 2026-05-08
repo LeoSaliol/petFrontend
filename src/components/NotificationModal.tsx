@@ -1,19 +1,7 @@
 import { Link } from "react-router-dom";
 import { CommentModal } from "./CommentModal";
-import type { Perfil } from "../types";
-interface Notification {
-  id: string;
-  type: "LIKE" | "COMMENT" | "FOLLOW";
-  message: string;
-  isRead: boolean;
-  actorId: number;
-  postId?: number;
-  actor?: {
-    id: number;
-    name: string;
-    image: string;
-  };
-}
+import type { Perfil, Notification } from "../types";
+
 export const NotificationModal = ({
   notifications,
   setShowNotifications,
@@ -36,12 +24,14 @@ export const NotificationModal = ({
       {notifications.length === 0 ? (
         <p className="p-4 text-gray-500">No tienes notificaciones</p>
       ) : (
-        notifications.map((n: Notification) => (
+        notifications.map((n: Notification) => {
+          if (!n.fromUser) return null;
+          return (
           <div
             onMouseEnter={() => {
               if (!n.isRead) {
                 setTimeout(() => {
-                  handleRead(n.id);
+                  handleRead(String(n.id));
                 }, 500);
               }
             }}
@@ -50,21 +40,21 @@ export const NotificationModal = ({
           >
             <Link
               to={
-                n.type === "FOLLOW"
-                  ? `/profile/${n.actor?.id}`
-                  : `/post/${n.postId}`
+                n.type === "follow"
+                  ? `/profile/${n.fromUser.id}`
+                  : n.relatedPostId ? `/post/${n.relatedPostId}` : "#"
               }
               onClick={() => setShowNotifications(false)}
             >
               <img
                 className="h-9 w-9 rounded-full object-cover"
-                src={n.actor?.image}
-                alt={n.actor?.name}
+                src={n.fromUser.avatar || "/default-avatar.png"}
+                alt={n.fromUser.name}
               />
             </Link>
-            {n.type === "FOLLOW" ? (
+            {n.type === "follow" ? (
               <Link
-                to={`/profile/${n.actorId}`}
+                to={`/profile/${n.fromUser.id}`}
                 className=""
                 onClick={() => setShowNotifications(false)}
               >
@@ -73,7 +63,7 @@ export const NotificationModal = ({
             ) : (
               <p
                 className="cursor-pointer"
-                onClick={() => goComment(n.postId!)}
+                onClick={() => n.relatedPostId && goComment(n.relatedPostId)}
               >
                 {" "}
                 {n.message}{" "}
@@ -85,7 +75,7 @@ export const NotificationModal = ({
                 onMouseEnter={() => {
                   if (!n.isRead) {
                     setTimeout(() => {
-                      handleRead(n.id);
+                      handleRead(String(n.id));
                     }, 500);
                   }
                 }}
@@ -95,7 +85,8 @@ export const NotificationModal = ({
               </div>
             )}
           </div>
-        ))
+          );
+        })
       )}
       <Link
         to={"/notifications"}

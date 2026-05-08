@@ -1,14 +1,57 @@
+import { motion } from "framer-motion";
 import type { SVGProps } from "react";
 
-export const LoginIcon = (props: SVGProps<SVGSVGElement>) => (
+interface LoginIconProps extends SVGProps<SVGSVGElement> {
+  isLoggedIn?: boolean;
+}
+
+export const LoginIcon = ({ isLoggedIn = false, ...props }: LoginIconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
-    viewBox="0 0 25 25"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={2}
     {...props}
   >
-    <g strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
-      <path d="M17 12h-6.5M13 9l-2.5 3M13 15l-2.5-3M17 17c0 2.21-1.79 3-4 3h-3a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4h3c2.21 0 4 .79 4 3" />
-    </g>
+    {isLoggedIn ? (
+      <>
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        <motion.path
+          d="M16 17l5-5-5-5"
+          animate={{ x: isLoggedIn ? [0, -3, 0] : [0, 3, 0] }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.path
+          d="M16 12H4"
+          animate={{ x: isLoggedIn ? [0, -3, 0] : [0, 3, 0] }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </>
+    ) : (
+      <>
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+        <motion.path
+          d="M10 17l5-5-5-5"
+          animate={{ x: [0, 3, 0] }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <path d="M15 12H3" />
+      </>
+    )}
   </svg>
 );

@@ -1,31 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 
-import { createComment, deletePost, getComments, getPost } from "../api/axios";
+import { commentsService } from "../api";
+import { postsService } from "../api";
+
+const createComment = (postId: number, petId: number, content: string) =>
+  commentsService.create({ postId, petId, content });
+const getComments = (postId: number) => commentsService.getByPost(postId);
+const getPost = (postId: number) => postsService.getById(postId);
+const deletePost = (postId: number) => postsService.delete(postId);
 import { timeAgoShort } from "../utils/time";
 import { useAuth } from "../context/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { Perfil } from "../types";
+import type { Perfil, Comment } from "../types";
 import { toast } from "sonner";
 import { ConfigPost } from "./ConfigPost";
 import { CommentIcon } from "../icons/CommentIcon";
 import { HeartIcon } from "../icons/LikeIcon";
 import { useLikePost } from "../hooks/useLike";
-
-interface Comment {
-  id: number;
-  content: string;
-  createdAt: string;
-  pet: {
-    id: number;
-    name: string;
-    image: string;
-  };
-  petId: number;
-  postId: number;
-  newComment?: string;
-}
+import { CommentSkeleton } from "./skeletons";
 
 export const CommentModal = ({
   pcomment,
@@ -34,12 +29,12 @@ export const CommentModal = ({
   pcomment: Perfil | null;
   closeModal: () => void;
 }) => {
-  const { data: comments = [], isLoading } = useQuery({
+  const { data: comments = [], isLoading: commentsLoading } = useQuery({
     queryKey: ["comments", pcomment?.postId],
     queryFn: () => getComments(pcomment!.postId),
     enabled: !!pcomment?.postId,
   });
-  const { data: post } = useQuery({
+  const { data: post, isLoading: postLoading } = useQuery({
     queryKey: ["post", pcomment?.postId],
     queryFn: () => getPost(pcomment!.postId),
     enabled: !!pcomment?.postId,
@@ -92,14 +87,14 @@ export const CommentModal = ({
       return { previousComments };
     },
 
-    onError: (err, variables, context) => {
+    onError: (_err, variables, context) => {
       queryClient.setQueryData(
         ["comments", variables.postId],
         context?.previousComments,
       );
     },
 
-    onSettled: (data, error, variables) => {
+    onSettled: (_data, _error, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["comments", variables.postId],
       });
@@ -170,8 +165,8 @@ export const CommentModal = ({
     });
   };
 
-  if (isLoading) {
-    <div className="text-xl">cargando</div>;
+  if (commentsLoading || postLoading) {
+    return <CommentSkeleton />;
   }
 
   return (
@@ -234,23 +229,39 @@ export const CommentModal = ({
             {pcomment?.content}
           </p>
           <div className="mt-4 mb-3 ml-1 flex items-center gap-3">
-            <span
+            <motion.span
               className="flex items-center gap-1"
               onClick={() => likeMutation.mutate({ postId: pcomment!.postId })}
+              whileTap={{ scale: 0.8 }}
             >
-              <HeartIcon
-                width={24}
-                className={`h-7 w-7 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 ${post?.likes.some((like: any) => like.petId === pet?.id) ? "fill-likeColor dark:stroke-likeColor" : "dark:stroke-primaryWhite"} `}
-              />{" "}
+              <motion.div
+                whileHover={{ scale: 1.2, rotate: post?.likes.some((like: any) => like.petId === pet?.id) ? -15 : 0 }}
+                whileTap={{ scale: 0.7 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <HeartIcon
+                  width={24}
+                  className={`h-7 w-7 cursor-pointer ${post?.likes.some((like: any) => like.petId === pet?.id) ? "fill-likeColor dark:stroke-likeColor" : "dark:stroke-primaryWhite"} `}
+                />
+              </motion.div>{" "}
               {post?._count.likes}
-            </span>
-            <span className="flex items-center gap-2">
-              <CommentIcon
-                width={24}
-                className="dark:stroke-primaryWhite h-6 w-6 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110"
-              />{" "}
+            </motion.span>
+            <motion.span 
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.15 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.2, y: -2 }}
+                transition={{ type: "spring", stiffness: 300, damping: 12 }}
+              >
+                <CommentIcon
+                  width={24}
+                  className="dark:stroke-primaryWhite h-6 w-6 cursor-pointer"
+                />
+              </motion.div>{" "}
               {pcomment?._count.comments}
-            </span>
+            </motion.span>
           </div>
           <div className="custom-scrollbar flex-1 overflow-y-auto pr-2">
             {comments.length > 0 ? (

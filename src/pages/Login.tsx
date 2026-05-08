@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { EyeIcon, EyeOffIcon } from "../icons/EyeIcon";
-import { loginUser, myPets } from "../api/axios";
+import { authService, petsService } from "../api";
 import { useAuth } from "../context/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "../types/validationsForm";
-import { toast, Toaster } from "sonner";
+import { loginSchema } from "../types/validations";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 type FormData = {
   email: string;
   password: string;
@@ -28,18 +29,18 @@ export const Login = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await loginUser(data.email, data.password);
+      await authService.login({ email: data.email, password: data.password });
       await refreshUser();
-      const pets = await myPets();
+      const pets = await petsService.getMyPets();
       if (pets.length === 0) {
         navigate("/pets");
       } else {
         toast.success("Usuario logueado exitosamente");
         setTimeout(() => navigate("/"), 2000);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.log("llego al error", error);
-      if (error.response?.data?.message) {
+      if (error instanceof AxiosError && error.response?.data?.message) {
         setError("root", {
           type: "server",
           message: "Error inesperado",
@@ -51,18 +52,16 @@ export const Login = () => {
 
   return (
     <main className="dark:bg-primaryBlack dark:text-primaryWhite mx-auto flex min-h-screen w-full items-center justify-center">
-      <Toaster position="top-center" richColors />
-
-      <div className="dark:bg-primaryBlack flex h-full w-[80%] flex-col items-center gap-16 rounded-lg border border-[#b6a5ad5e] bg-[#fab2a918] px-6 py-18 shadow-lg md:w-[45%] dark:border-[#ee73ac27]">
+      <div className="dark:bg-primaryBlack flex h-full w-4/5 flex-col items-center gap-16 rounded-lg border border-pink-200/40 bg-pink-50/10 px-6 py-12 shadow-lg md:w-[45%] dark:border-pink-900/30">
         <Link
           to="/"
-          className="font-title text-primary mb-4 hidden text-[2.5rem] transition-all duration-700 ease-in-out md:block"
+          className="font-title text-primary mb-4 hidden text-4xl transition-all duration-700 ease-in-out md:block"
         >
           Michigram
         </Link>
         <Link
           to="/"
-          className="font-title text-primary mb-4 block text-[2.5rem] transition-all duration-700 ease-in-out md:hidden"
+          className="font-title text-primary mb-4 block text-4xl transition-all duration-700 ease-in-out md:hidden"
         >
           M
         </Link>
@@ -71,54 +70,71 @@ export const Login = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="mb-5">
+            <label htmlFor="email" className="sr-only">
+              Email
+            </label>
             <input
               {...register("email")}
+              id="email"
               type="email"
-              className={`w-full border-b border-gray-300 py-2 focus:border-gray-500 focus:outline-none ${errors.root ? "border-redPink" : ""} `}
+              className={`w-full border-b border-gray-300 bg-transparent py-2 text-inherit placeholder:text-gray-400 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500 ${errors.root ? "border-redPink" : ""}`}
               placeholder="Email"
+              aria-describedby={errors.email ? "email-error" : undefined}
             />
             {errors.email && (
-              <p className="text-redPink mt-1">{errors.email.message}</p>
+              <p id="email-error" className="text-redPink mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
           <div
-            className={
-              "relative mb-5 flex w-full items-center gap-2 border-b border-gray-300 py-2 focus:border-gray-500 " +
-              (errors.root ? "border-redPink" : "")
-            }
+            className={`relative mb-5 flex w-full items-center gap-2 border-b border-gray-300 py-2 focus-within:border-gray-500 dark:border-gray-600 ${errors.root ? "border-redPink" : ""}`}
           >
+            <label htmlFor="password" className="sr-only">
+              Contraseña
+            </label>
             <input
               {...register("password")}
+              id="password"
               type={showPassword ? "text" : "password"}
-              className="w-full focus:outline-none"
+              className="w-full bg-transparent text-inherit placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-gray-500"
               placeholder="Contraseña"
+              aria-describedby={errors.password ? "password-error" : undefined}
             />
 
             {showPassword ? (
               <EyeIcon
-                className="cursor-pointer dark:stroke-pink-200"
+                className="cursor-pointer text-gray-500 hover:text-pink-500 dark:text-gray-400 dark:hover:text-pink-400"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label="Ocultar contraseña"
               />
             ) : (
               <EyeOffIcon
-                className="cursor-pointer dark:stroke-pink-200"
+                className="cursor-pointer text-gray-500 hover:text-pink-500 dark:text-gray-400 dark:hover:text-pink-400"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label="Mostrar contraseña"
               />
             )}
             {errors.password && (
-              <p className="text-redPink absolute bottom-[-1.9rem]">
+              <p
+                id="password-error"
+                className="text-redPink absolute -bottom-6 left-0 text-sm"
+              >
                 {errors.password.message}
               </p>
             )}
           </div>
-          <button className="from-formColorLight to-formColorDark text-primaryWhite w-full cursor-pointer rounded-full bg-linear-to-r py-2 font-semibold transition hover:opacity-90">
-            Login
+          <button
+            type="submit"
+            className="w-full cursor-pointer rounded-full bg-linear-to-r from-pink-300 to-pink-500 py-2 font-semibold text-white transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            Iniciar sesión
           </button>
           <p className="mx-auto mt-20">
             No tienes cuenta?{" "}
             <Link
               to="/register"
-              className="text-formColorDark cursor-pointer font-bold"
+              className="cursor-pointer rounded font-bold text-pink-500 hover:text-pink-600 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"
             >
               Regístrate
             </Link>

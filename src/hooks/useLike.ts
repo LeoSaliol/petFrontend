@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toggleLike } from "../api/axios";
+import { likesService } from "../api";
 
 export const useLikePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ postId }: { postId: number }) => toggleLike(postId),
+    mutationFn: ({ postId }: { postId: number }) => likesService.toggle(postId),
 
     onMutate: async ({ postId }) => {
       await queryClient.cancelQueries({ queryKey: ["feed"] });

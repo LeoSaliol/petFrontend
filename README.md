@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+# PetSocial
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plataforma social para amantes de las mascotas. Comparte fotos, interactúa con otros usuarios, y gestiona el perfil de tus compañeros peludos.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework:** React 19 + TypeScript
+- **Build:** Vite 7
+- **Styling:** Tailwind CSS 4
+- **Forms:** React Hook Form + Zod
+- **Data Fetching:** TanStack Query
+- **Real-time:** Socket.io
+- **Animations:** Framer Motion
+- **PWA:** Vite PWA Plugin
 
-## React Compiler
+## Features
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- Autenticación (login/registro)
+- Feed social con publicaciones
+- Sistema de likes y comentarios
+- Chat en tiempo real
+- Notificaciones en tiempo real
+- Gestión de mascotas (añadir/editar)
+- Perfiles de usuario
+- Tema claro/oscuro
+- Diseño responsive
+- PWA (instalable)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Instalar dependencias
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Ejecutar en desarrollo
+npm run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Build para producción
+npm run build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Vista previa de producción
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── api/           # Endpoints de la API
+├── components/    # Componentes reutilizables
+├── context/       # Contextos de React (Auth)
+├── hooks/         # Hooks personalizados
+├── icons/         # Componentes SVG
+├── layouts/       # Layouts principales
+├── pages/         # Páginas de la app
+├── routes/        # Configuración de rutas
+├── socket/        # Servicio de WebSocket
+├── types/         # Definiciones de TypeScript
+└── utils/         # Funciones utilitarias
+```
+
+## Scripts
+
+| Comando        | Descripción                    |
+|----------------|--------------------------------|
+| `npm run dev`  | Iniciar servidor de desarrollo |
+| `npm run build`| Compilar para producción       |
+| `npm run lint` | Verificar código con ESLint    |
+| `npm run preview` | Vista previa del build     |

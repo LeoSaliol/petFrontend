@@ -5,29 +5,33 @@ export const groupNotifications = (notifications: Notification[]) => {
   const map = new Map();
 
   for (const notif of notifications) {
-    const key = `${notif.type}-${notif.postId}-${notif.actorId}`;
+    const actor = notif.actor || notif.fromUser;
+    const postId = notif.relatedPostId || notif.postId;
+    const key = `${notif.type}-${postId || 'no-post'}-${actor?.id || notif.fromUser?.id}`;
 
     if (!map.has(key)) {
       map.set(key, {
         ...notif,
+        actor: actor || notif.fromUser,
         count: 1,
-        actors: [notif.actor],
+        actors: [actor || notif.fromUser],
+        postId,
+        relatedPostId: postId,
       });
     } else {
       const existing = map.get(key);
       existing.count += 1;
+      const existingActor = actor || notif.fromUser;
       const alreadyExists = existing.actors.some(
-        (a: any) => a.id === notif.actor.id,
+        (a: any) => a?.id === existingActor?.id,
       );
 
-      if (!alreadyExists) {
-        existing.actors.push(notif.actor);
-      } else {
-        existing.actors = existing.actors.map((a: any) =>
-          a.id === notif.actor.id ? notif.actor : a,
-        );
+      if (!alreadyExists && existingActor) {
+        existing.actors.push(existingActor);
       }
-      if (new Date(notif.createdAt) > new Date(existing.createdAt)) {
+      const notifDate = new Date(notif.createdAt);
+      const existingDate = new Date(existing.createdAt);
+      if (notifDate > existingDate) {
         existing.createdAt = notif.createdAt;
       }
     }
@@ -37,24 +41,25 @@ export const groupNotifications = (notifications: Notification[]) => {
 };
 
 export const formatNotification = (notif: any) => {
-  const actorName = notif.actor?.name || "Alguien";
+  const actorName = notif.actor?.name || notif.fromUser?.name || "Alguien";
+  const type = notif.type?.toUpperCase() || notif.type;
 
   if (notif.count > 1) {
-    if (notif.type === "LIKE") {
+    if (type === "LIKE") {
       return {
         main: actorName,
         secondary: `y ${notif.count - 1} más dieron like a tu publicación`,
         others: notif.actors.slice(1),
       };
     }
-    if (notif.type === "FOLLOW") {
+    if (type === "FOLLOW") {
       return {
         main: actorName,
         secondary: `y ${notif.count - 1} más empezaron a seguirte`,
         others: notif.actors.slice(1),
       };
     }
-    if (notif.type === "COMMENT") {
+    if (type === "COMMENT") {
       return {
         main: actorName,
         secondary: `y ${notif.count - 1} más comentaron tu publicación`,
@@ -63,14 +68,14 @@ export const formatNotification = (notif: any) => {
     }
     return {
       main: actorName,
-      secondary: notif.message.replace(actorName, ""),
+      secondary: notif.message?.replace(actorName, "") || "",
       others: notif.actors.slice(1),
     };
   }
 
   return {
     main: actorName,
-    secondary: notif.message.replace(actorName, ""),
+    secondary: notif.message?.replace(actorName, "") || "",
     others: [],
   };
 };

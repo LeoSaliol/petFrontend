@@ -1,50 +1,33 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Login } from "./pages/Login.tsx";
-import { Feed } from "./pages/Feed.tsx";
-import { Profile } from "./pages/Profile.tsx";
-import Register from "./pages/Register.tsx";
-import Pet from "./pages/Pet.tsx";
-import { AuthProvider } from "./context/AuthProvider.tsx";
-
-import { ProtectedLayout } from "./routes/ProtectedLayout.tsx";
-import { CreatePost } from "./pages/CreatePost.tsx";
+import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Notifications } from "./pages/Notifications.tsx";
-import ChatPage from "./pages/ChatPage.tsx";
-const queryClient = new QueryClient();
+import { Toaster } from "sonner";
+import { AuthProvider } from "./context/AuthProvider";
+import { AppRoutes } from "./routes/AppRoutes";
+import { ErrorBoundary } from "./components";
+import "./index.css";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      retry: 1,
+    },
+  },
+});
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<App children={<Feed />} />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/profile/:id"
-              element={<App children={<Profile />} />}
-            />
-            <Route path="/register" element={<Register />} />
-
-            <Route element={<ProtectedLayout />}>
-              <Route
-                path="/create-post"
-                element={<App children={<CreatePost />} />}
-              />
-              <Route path="/pets" element={<App children={<Pet />} />} />
-              <Route
-                path="/notifications"
-                element={<App children={<Notifications />} />}
-              />
-              <Route path="/chats" element={<App children={<ChatPage />} />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+          <Toaster position="top-right" richColors />
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </StrictMode>,
 );

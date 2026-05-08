@@ -3,9 +3,7 @@ import type { SVGProps } from 'react';
 export const DotsIcon = (props: SVGProps<SVGSVGElement>) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
-        style={{
-            opacity: 1,
-        }}
+        fill="currentColor"
         viewBox="0 0 15 15"
         {...props}
     >

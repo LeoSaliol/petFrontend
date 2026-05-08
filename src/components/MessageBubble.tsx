@@ -16,22 +16,35 @@ export const MessageBubble = ({
   isRead: boolean;
   showAvatar: boolean;
   sender: { id: number; name: string; avatar: string | null };
-  pet: { id: number; name: string; image: string };
+  pet: { id: number; name: string; image: string } | undefined;
 }) => {
+  const avatarSrc = sender.avatar || pet?.image;
+
   return (
     <div
       className={`flex items-end gap-2 ${isMine ? "flex-row-reverse" : "flex-row"}`}
     >
       {!isMine && (
         <div className="w-6 shrink-0">
-          <Link to={`/profile/${pet.id}`}>
-            {showAvatar && (
+          <Link to={pet ? `/profile/${pet.id}` : "#"}>
+            {showAvatar && avatarSrc ? (
               <img
-                src={sender.avatar ?? pet.image}
+                src={avatarSrc}
                 alt={sender.name}
                 className="h-6 w-6 rounded-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                  if (target.nextSibling instanceof HTMLElement) {
+                    target.nextSibling.style.display = "flex";
+                  }
+                }}
               />
-            )}
+            ) : showAvatar ? (
+              <div className="bg-pinkNotify flex h-6 w-6 items-center justify-center rounded-full text-[10px] text-white">
+                {sender.name.charAt(0).toUpperCase()}
+              </div>
+            ) : null}
           </Link>
         </div>
       )}

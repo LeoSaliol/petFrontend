@@ -1,50 +1,35 @@
-import { useState } from "react";
 import { DotsIcon } from "../icons/DotsIcon";
-import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
+
+interface ConfigPostProps {
+  classGroup?: string;
+  handleDelete: () => void;
+  handleEdit: () => void;
+}
 
 export const ConfigPost = ({
+  classGroup = "",
   handleDelete,
   handleEdit,
-  classGroup,
-}: {
-  handleEdit: () => void;
-  handleDelete: () => void;
-  classGroup?: string;
-}) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+}: ConfigPostProps) => {
   return (
-    <>
-      <ConfirmDeleteModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={() => {
-          handleDelete();
-          setShowDeleteModal(false);
-        }}
-      />
-      <span className="group relative ml-auto">
-        <DotsIcon className="h-6 w-6 transform cursor-pointer stroke-3 transition-all duration-400 group-hover:scale-110 dark:fill-pink-200" />
-
-        <div
-          className={`bg-primaryBlack text-primaryWhite ${classGroup ? classGroup : "right-6 bottom-4"} absolute translate-x-[-9] overflow-hidden rounded-md text-sm whitespace-nowrap opacity-0 shadow-lg transition-all duration-400 group-hover:translate-x-2 group-hover:opacity-100 dark:bg-[#1d181ace]`}
+    <div className={`relative group ${classGroup}`}>
+      <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+        <DotsIcon className="w-5 h-5" />
+      </button>
+      <div className="absolute right-0 top-8 hidden group-hover:block bg-white dark:bg-gray-800 shadow-lg rounded-md py-1 min-w-[120px] z-50">
+        <button
+          onClick={handleEdit}
+          className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
         >
-          <li className="flex flex-col">
-            <button
-              className="cursor-pointer px-9 py-4 text-[1rem] hover:bg-[#b6a5ad28]"
-              onClick={handleEdit}
-            >
-              Editar
-            </button>
-            <button
-              className="cursor-pointer px-9 py-4 text-[1rem] hover:bg-[#b6a5ad28]"
-              onClick={() => setShowDeleteModal(true)}
-            >
-              Eliminar
-            </button>
-          </li>
-        </div>
-      </span>
-    </>
+          Editar
+        </button>
+        <button
+          onClick={handleDelete}
+          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
   );
 };

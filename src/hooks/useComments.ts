@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createComment } from "../api/axios";
+import { commentsService } from "../api";
 
 export const useCreateComment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ postId, petId, content }: any) =>
-      createComment(postId, petId, content),
+      commentsService.create({ postId, petId, content }),
 
     onMutate: async ({ postId, content, petId }) => {
       await queryClient.cancelQueries({

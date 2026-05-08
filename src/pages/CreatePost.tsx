@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { ButtonFile } from "../components/ButtonFile";
-import { createPost, updatePost } from "../api/axios";
+import { postsService } from "../api";
 import { useAuth } from "../context/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import Cropper from "react-easy-crop";
@@ -51,19 +51,21 @@ export const CreatePost = () => {
 
     try {
       if (post) {
-        const res = await updatePost(post!.id, content, file as File);
+        await postsService.update(post!.id, content, file as File);
 
-        if (res === 200) {
-          toast.success("Post actualizado correctamente");
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          navigate("/");
-        }
+        toast.success("Post actualizado correctamente");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/");
       } else {
         if (!file) {
           console.error("No se ha seleccionado una imagen");
           return;
         }
-        await createPost(pet?.id, content, file);
+        if (!pet?.id) {
+          toast.error("Error: mascota no encontrada");
+          return;
+        }
+        await postsService.create({ petId: pet.id, content, image: file as File });
         toast.success("Post creado correctamente");
         await new Promise((resolve) => setTimeout(resolve, 1000));
         navigate("/");

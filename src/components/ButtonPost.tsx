@@ -1,23 +1,45 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-export const CreatePostButton = ({ clasN }: { clasN?: string }) => {
+interface CreatePostButtonProps {
+  clasN?: string;
+}
+
+export const CreatePostButton = ({ clasN = "" }: CreatePostButtonProps) => {
+  const navigate = useNavigate();
+
+  const handleCreatePost = () => {
+    navigate("/create-post");
+  };
+
   return (
-    <div className={` ${clasN ? clasN : ""} group`}>
-      <div
-        className={
-          "bg-primaryText text-background absolute top-1/2 left-14 translate-x-[-4] -translate-y-1/2 rounded-lg px-3 py-1 text-sm whitespace-nowrap opacity-0 shadow-lg transition-all duration-400 group-hover:translate-x-1 group-hover:opacity-100 " +
-          (clasN ? "hidden md:block" : "")
-        }
+    <motion.button
+      onClick={handleCreatePost}
+      className={`from-formColorLight to-formColorDark flex cursor-pointer items-center gap-2 rounded-full bg-linear-to-r px-2 py-2 font-semibold text-white transition hover:opacity-90 ${clasN}`}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <motion.svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className="h-7 w-7"
+        whileHover={{ rotate: 90, scale: 1.2 }}
+        transition={{
+          type: "spring",
+          stiffness: 100,
+          damping: 20,
+          duration: 0.2,
+        }}
       >
-        Crear publicación
-      </div>
-
-      <Link
-        to="/create-post"
-        className="text-background flex h-14 w-14 transform cursor-pointer items-center justify-center rounded-full bg-[#ED6B86] text-[3.4rem] shadow-lg transition-all duration-400 group-hover:scale-100 hover:bg-[#c2546cf1] dark:bg-[#463239]"
-      >
-        +
-      </Link>
-    </div>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 4.5v15m7.5-7.5h-15"
+        />
+      </motion.svg>
+    </motion.button>
   );
 };

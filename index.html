@@ -1,32 +1,52 @@
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link
-            rel="icon"
-            type="image/svg+xml"
-            href="/vite.svg"
-        />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-        />
-        <title>petsocial-frontend</title>
-    </head>
-    <body data-theme="dark">
-        <div id="root"></div>
-        <script>
-            document.documentElement.classList.toggle(
-                'dark',
-                localStorage.theme === 'dark' ||
-                    (!('theme' in localStorage) &&
-                        window.matchMedia('(prefers-color-scheme: dark)')
-                            .matches),
-            );
-        </script>
-        <script
-            type="module"
-            src="/src/main.tsx"
-        ></script>
-    </body>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/public/michigram.ico" />
+    <link rel="apple-touch-icon" href="/public/michigram.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Kavoon&display=swap"
+      as="style"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Michigram - Red social para mascotas. Comparte fotos, conecta con otros amantes de los animales y descubre contenido adorable."
+    />
+    <meta
+      name="keywords"
+      content="red social, mascotas, animales, fotos de mascotas, comunidad, animales domésticos, michigram"
+    />
+    <meta name="author" content="Michigram" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Michigram - Red Social para Mascotas" />
+    <meta
+      property="og:description"
+      content="Comparte fotos de tu mascota y conecta con otros amantes de los animales."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://michigram.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Michigram - Red Social para Mascotas" />
+    <meta
+      name="twitter:description"
+      content="Comparte fotos de tu mascota y conecta con otros amantes de los animales."
+    />
+    <title>Michigram - Red Social para Mascotas</title>
+  </head>
+  <body data-theme="dark">
+    <div id="root"></div>
+    <script>
+      document.documentElement.classList.toggle(
+        "dark",
+        localStorage.theme === "dark" ||
+          (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches),
+      );
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Pet } from "../types";
-import { logged, myPets } from "../api/axios";
+import { authService, petsService } from "../api";
 import { AuthContext } from "./AuthContext";
 import { useEffect } from "react";
 import { connectSocket, disconnectSocket } from "../socket/socketService";
@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // 🔹 1. Usuario logueado
   const { data, isLoading: loadingUser } = useQuery({
     queryKey: ["auth"],
-    queryFn: logged,
+    queryFn: authService.me,
     select: (data) => ({
       userToken: data.user.id,
       petId: data.petId ? data.petId : null,
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // 🔹 2. Mascota del usuario
   const { data: petData, isLoading: loadingPet } = useQuery({
     queryKey: ["myPets"],
-    queryFn: myPets,
+    queryFn: petsService.getMyPets,
   });
 
   const pet: Pet | null = petData ? petData[0] : null;
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
   useEffect(() => {
     if (data?.userToken) {
-      connectSocket();
+      connectSocket(data.userToken);
     } else {
       disconnectSocket();
     }
@@ -46,9 +46,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        userToken: data?.userToken,
+        userToken: data?.userToken ?? null,
         pet,
-        petId: data?.petId,
+        petId: data?.petId ?? null,
         loading,
         refreshUser,
       }}
