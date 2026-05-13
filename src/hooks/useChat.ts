@@ -108,7 +108,7 @@ export const useChat = () => {
           return {
             ...conv,
             messages: [message, ...(conv.messages || [])],
-            unreadCount: isActive ? 0 : (conv.unreadCount || 0) + 1,
+            unreadCount: isActive || isFromMe ? 0 : (conv.unreadCount || 0) + 1,
           };
         });
         const targetConv = updated.find((c) => c.id === message.conversationId);
