@@ -12,20 +12,20 @@ export const ConfigPost = ({
   handleEdit,
 }: ConfigPostProps) => {
   return (
-    <div className={`relative group ${classGroup}`}>
-      <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-        <DotsIcon className="w-5 h-5" />
+    <div className={`group relative ${classGroup}`}>
+      <button className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-700">
+        <DotsIcon className="h-5 w-5" />
       </button>
-      <div className="absolute right-0 top-8 hidden group-hover:block bg-white dark:bg-gray-800 shadow-lg rounded-md py-1 min-w-[120px] z-50">
+      <div className="absolute top-8 right-0 z-50 hidden min-w-30 rounded-md bg-white py-1 shadow-lg group-hover:block dark:bg-gray-800">
         <button
           onClick={handleEdit}
-          className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+          className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           Editar
         </button>
         <button
           onClick={handleDelete}
-          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+          className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           Eliminar
         </button>

@@ -9,10 +9,10 @@ import { EditIcon } from "../icons/EditIcon";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PerfilSkeleton } from "../components/skeletons/PerfilSkeleton";
 import type { Perfil, PostPerfil } from "../types";
-import { useChat } from "../hooks/useChat";
+import { useChatContext } from "../context/ChatContext";
 
 export const Profile = () => {
-  const { openConversation } = useChat();
+  const { openConversation } = useChatContext();
   const [commentData, setCommentData] = useState<Perfil | null>(null);
   const [openModal, setOpenModal] = useState<boolean>(false);
 

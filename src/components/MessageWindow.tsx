@@ -4,6 +4,7 @@ import { MessageBubble } from "./MessageBubble";
 import { timeAgoShort } from "../utils/time";
 import { Avatar } from "./ChatAvatar";
 import { Link } from "react-router-dom";
+import { CrossIcon } from "../icons/CrossIcon";
 
 export const MessageWindow = ({
   conversation,
@@ -13,6 +14,7 @@ export const MessageWindow = ({
   onSend,
   onLoadMore,
   pet,
+  setShowChat,
 }: {
   conversation: Conversation;
   messages: Message[];
@@ -25,6 +27,7 @@ export const MessageWindow = ({
     name: string;
     image: string;
   };
+  setShowChat: () => void;
 }) => {
   const [input, setInput] = useState("");
   const [petPerfil] = useState<typeof pet | null>(pet ?? null);
@@ -38,17 +41,26 @@ export const MessageWindow = ({
 
   useEffect(() => {
     if (messages.length > 0 && messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   }, [conversation.id]);
 
   useEffect(() => {
-    if (prevMessagesLength.current > messages.length && topRef.current && messagesContainerRef.current) {
+    if (
+      prevMessagesLength.current > messages.length &&
+      topRef.current &&
+      messagesContainerRef.current
+    ) {
       topRef.current.scrollIntoView({ behavior: "auto" });
-    } else if (messages.length > prevMessagesLength.current && messagesContainerRef.current) {
+    } else if (
+      messages.length > prevMessagesLength.current &&
+      messagesContainerRef.current
+    ) {
       setTimeout(() => {
         if (messagesContainerRef.current) {
-          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+          messagesContainerRef.current.scrollTop =
+            messagesContainerRef.current.scrollHeight;
         }
       }, 50);
     }
@@ -94,7 +106,7 @@ export const MessageWindow = ({
         <div>
           <Link
             to={`/profile/${otherPetId}`}
-            className="text-md font-semibold capitalize text-neutral-800 dark:text-neutral-100"
+            className="text-md font-semibold text-neutral-800 capitalize dark:text-neutral-100"
           >
             {other.name}
             {otherPetName && (
@@ -111,10 +123,20 @@ export const MessageWindow = ({
             )}
           </div>
         </div>
-        <div className="ml-auto">X</div>
+        <div className="ml-auto">
+          <button
+            onClick={setShowChat}
+            className="cursor-pointer rounded-full p-1 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          >
+            <CrossIcon className="w-7" stroke="currentColor" />
+          </button>
+        </div>
       </div>
 
-      <div ref={messagesContainerRef} className="custom-scrollbar min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-5 py-4 bg-neutral-50 dark:bg-neutral-950">
+      <div
+        ref={messagesContainerRef}
+        className="custom-scrollbar min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-neutral-50 px-5 py-4 dark:bg-neutral-950"
+      >
         <div ref={topRef} />
         <button
           onClick={onLoadMore}
@@ -127,7 +149,13 @@ export const MessageWindow = ({
           const nextMsg = messages[i + 1];
           const showAvatar =
             !isMine && (!nextMsg || nextMsg.senderId !== msg.senderId);
-          const msgSender = isMine ? { id: currentUserId, name: "Vos", avatar: petPerfil?.image ?? null } : { id: other.id, name: other.name, avatar: otherPetImage };
+          const msgSender = isMine
+            ? {
+                id: currentUserId,
+                name: "Vos",
+                avatar: petPerfil?.image ?? null,
+              }
+            : { id: other.id, name: other.name, avatar: otherPetImage };
           const msgPet = isMine ? (petPerfil ?? otherPet) : otherPet;
           return (
             <MessageBubble
@@ -145,7 +173,7 @@ export const MessageWindow = ({
         <div ref={bottomRef} />
       </div>
 
-      <div className="border-t border-neutral-100 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="dark:bg-primaryBlack border-neutral-100 bg-white px-4 py-3 dark:border-neutral-800">
         <div className="flex items-end gap-2 rounded-2xl border border-neutral-100 bg-neutral-50 px-4 py-2 dark:border-neutral-700 dark:bg-neutral-800">
           <textarea
             value={input}

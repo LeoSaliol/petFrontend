@@ -20,11 +20,11 @@ import { MessagesIcon } from "../icons/MessageIcon";
 import type { Notification as NotificationType } from "../types/notification";
 import LogoWhite from "../assets/MLogoWhite.png";
 import LogoDark from "../assets/MLogoBlack.png";
-import { useChat } from "../hooks/useChat";
+import { useChatContext } from "../context/ChatContext";
 
 export default function Navbar() {
   const { userToken, pet, refreshUser } = useAuth();
-  const { conversations } = useChat();
+  const { conversations } = useChatContext();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [bouncing, setBouncing] = useState(false);
@@ -59,7 +59,7 @@ export default function Navbar() {
   const unread = notifications.filter(
     (n: NotificationType) => !n.isRead,
   ).length;
-  console.log(conversations);
+
   const msgUnreadCount = conversations.reduce(
     (acc, conv) => acc + conv.unreadCount,
     0,
@@ -200,7 +200,7 @@ export default function Navbar() {
           <div
             onClick={(e) => e.stopPropagation()}
             className={
-              "relative flex h-12 items-center justify-between gap-4 transition-all duration-700 ease-in-out md:w-62 md:gap-2" +
+              "relative flex h-12 items-center justify-between gap-7 transition-all duration-700 ease-in-out md:w-62 md:gap-2" +
               (scroll
                 ? " inScroll:translate-x-68 inScroll:backdrop-blur-none hidden backdrop-blur-[1px] md:flex"
                 : "w-80")
@@ -218,13 +218,13 @@ export default function Navbar() {
               whileTap={{ scale: 0.95 }}
             >
               <Link to={userToken ? `/chats` : "/login"}>
-                <MessagesIcon className="dark:fill-primaryWhite mb-1 w-8 -rotate-45 cursor-pointer dark:w-10" />
+                <MessagesIcon className="dark:fill-primaryWhite mb-1 w-8 -rotate-45 cursor-pointer" />
               </Link>
             </motion.div>
             {msgUnreadCount > 0 && (
               <span
                 className={
-                  "text-primaryWhite bg-pinkNotify absolute -top-1 left-5 items-center justify-center rounded-full px-1 " +
+                  "text-primaryWhite bg-pinkNotify absolute top-0.5 left-5 items-center justify-center rounded-full px-1 " +
                   (bouncing ? "animate-bounce" : "") +
                   " text-xs"
                 }
@@ -287,8 +287,7 @@ export default function Navbar() {
 
             <Link to="/login" onClick={userToken ? loggout : undefined}>
               <LoginIcon
-                width={43}
-                className={`pt-1 ${userToken ? "stroke-redPink" : "stroke-[#333]"} `}
+                className={`-ml-2 w-9 ${userToken ? "stroke-redPink" : "stroke-[#333]"} `}
               />
             </Link>
           </div>

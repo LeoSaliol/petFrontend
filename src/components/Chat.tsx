@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useChat } from "../hooks/useChat";
+import { useChatContext } from "../context/ChatContext";
 import { MessageWindow } from "./MessageWindow";
 import { ConversationItem } from "./ConversationItem";
 import { useLocation } from "react-router-dom";
@@ -23,7 +23,7 @@ export const Chat = () => {
     sendMessage,
     openConversation,
     isLoadingConversations,
-  } = useChat();
+  } = useChatContext();
   const location = useLocation();
   const hasOpen = useRef(false);
   const targetUserIdRef = useRef(location.state?.targetUserId);
@@ -77,9 +77,12 @@ export const Chat = () => {
           </h2>
           <button
             onClick={() => setShowChat(false)}
-            className="rounded-full p-1 text-neutral-500 hover:bg-neutral-100 md:hidden dark:hover:bg-neutral-800"
+            className={
+              "rounded-full p-1 text-neutral-500 hover:bg-neutral-100 md:hidden dark:hover:bg-neutral-800 " +
+              (showChat ? "block" : "hidden")
+            }
           >
-            <CrossIcon className="size-5" stroke="currentColor" />
+            <CrossIcon className="w-7" stroke="currentColor" />
           </button>
         </div>
         <div className="px-4 pb-3 max-md:px-4">
@@ -144,31 +147,8 @@ export const Chat = () => {
         <div
           className={`max-md:bg-bgWhite dark:max-md:bg-bgBlack flex flex-1 flex-col max-md:absolute max-md:inset-0 max-md:z-10 max-md:rounded-2xl ${!showChat ? "max-md:hidden" : "max-md:flex"}`}
         >
-          <div className="flex h-14 items-center border-b border-neutral-100 px-4 md:hidden dark:border-neutral-800">
-            <button
-              onClick={() => setShowChat(false)}
-              className="rounded-full p-1 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-            >
-              <CrossIcon className="size-5" stroke="currentColor" />
-            </button>
-            <div className="ml-3 flex items-center gap-2">
-              {otherUser?.avatar ? (
-                <img
-                  src={otherUser.avatar}
-                  className="size-8 rounded-full object-cover"
-                  alt=""
-                />
-              ) : (
-                <div className="bg-pinkNotify flex size-8 items-center justify-center rounded-full text-xs text-white">
-                  {otherUser?.name.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <span className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
-                {otherUser?.name}
-              </span>
-            </div>
-          </div>
           <MessageWindow
+            setShowChat={() => setShowChat(false)}
             conversation={activeConversation}
             messages={messages}
             currentUserId={currentUserId}
