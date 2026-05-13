@@ -28,6 +28,7 @@ export const MessageWindow = ({
 }) => {
   const [input, setInput] = useState("");
   const [petPerfil] = useState<typeof pet | null>(pet ?? null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const other = conversation.participants.find(
@@ -36,14 +37,20 @@ export const MessageWindow = ({
   const prevMessagesLength = useRef(messages.length);
 
   useEffect(() => {
-    if (messages.length > 0) {
-      bottomRef.current?.scrollIntoView({ behavior: "instant" });
+    if (messages.length > 0 && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [conversation.id]);
 
   useEffect(() => {
-    if (prevMessagesLength.current > messages.length && topRef.current) {
+    if (prevMessagesLength.current > messages.length && topRef.current && messagesContainerRef.current) {
       topRef.current.scrollIntoView({ behavior: "auto" });
+    } else if (messages.length > prevMessagesLength.current && messagesContainerRef.current) {
+      setTimeout(() => {
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+      }, 50);
     }
     prevMessagesLength.current = messages.length;
   }, [messages.length]);
@@ -62,15 +69,21 @@ export const MessageWindow = ({
   };
 
   if (!other) return null;
+
+  const otherPet = other.pets?.[0];
+  const otherPetId = otherPet?.id ?? other.id;
+  const otherPetName = otherPet?.name;
+  const otherPetImage = otherPet?.image ?? other.avatar;
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center gap-3 border-b border-neutral-100 bg-white px-5 py-3.5 dark:border-neutral-800 dark:bg-neutral-900">
-        <Link to={`/profile/${petPerfil ? petPerfil.id : other.pets[0]?.id}`}>
+        <Link to={`/profile/${otherPetId}`}>
           <Avatar
             user={{
-              id: petPerfil ? petPerfil.id : other.pets[0]?.id,
-              name: petPerfil ? petPerfil.name : other.name,
-              avatar: petPerfil ? petPerfil.image : other.pets[0]?.image,
+              id: otherPetId,
+              name: otherPetName ?? other.name,
+              avatar: otherPetImage,
               pets: other.pets || null,
               lastSeen: null,
             }}
@@ -80,13 +93,15 @@ export const MessageWindow = ({
         </Link>
         <div>
           <Link
-            to={`/profile/${petPerfil ? petPerfil.id : other.pets[0]?.id}`}
+            to={`/profile/${otherPetId}`}
             className="text-md font-semibold capitalize text-neutral-800 dark:text-neutral-100"
           >
-            {other.name}{" "}
-            <span className="ml-1 text-[13px] text-neutral-400 dark:text-neutral-400">
-              {petPerfil ? petPerfil.name : other.pets[0]?.name}
-            </span>
+            {other.name}
+            {otherPetName && (
+              <span className="ml-1 text-[13px] text-neutral-400 dark:text-neutral-400">
+                {otherPetName}
+              </span>
+            )}
           </Link>
           <div className="text-xs text-neutral-400">
             {isOnline ? (
@@ -99,7 +114,7 @@ export const MessageWindow = ({
         <div className="ml-auto">X</div>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 overflow-y-auto bg-neutral-50 px-5 py-4 dark:bg-neutral-950">
+      <div ref={messagesContainerRef} className="custom-scrollbar min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-5 py-4 bg-neutral-50 dark:bg-neutral-950">
         <div ref={topRef} />
         <button
           onClick={onLoadMore}
@@ -107,30 +122,26 @@ export const MessageWindow = ({
         >
           Cargar mensajes anteriores
         </button>
-        <div className="custom-scrollbar min-h-0 overflow-y-auto">
-          {messages.map((msg, i) => {
-            const isMine = msg.senderId === currentUserId;
-            const nextMsg = messages[i + 1];
-            const showAvatar =
-              !isMine && (!nextMsg || nextMsg.senderId !== msg.senderId);
-            return (
-              <MessageBubble
-                key={msg.id}
-                content={msg.content}
-                createdAt={msg.createdAt}
-                isMine={isMine}
-                isRead={msg.isRead}
-                showAvatar={showAvatar}
-                sender={{
-                  id: isMine ? currentUserId : other.id,
-                  name: isMine ? "Vos" : other.name,
-                  avatar: isMine ? (petPerfil?.image || other.avatar) : other.avatar,
-                }}
-                pet={isMine ? petPerfil || other.pets[0] : other.pets[0]}
-              />
-            );
-          })}
-        </div>
+        {messages.map((msg, i) => {
+          const isMine = msg.senderId === currentUserId;
+          const nextMsg = messages[i + 1];
+          const showAvatar =
+            !isMine && (!nextMsg || nextMsg.senderId !== msg.senderId);
+          const msgSender = isMine ? { id: currentUserId, name: "Vos", avatar: petPerfil?.image ?? null } : { id: other.id, name: other.name, avatar: otherPetImage };
+          const msgPet = isMine ? (petPerfil ?? otherPet) : otherPet;
+          return (
+            <MessageBubble
+              key={msg.id}
+              content={msg.content}
+              createdAt={msg.createdAt}
+              isMine={isMine}
+              isRead={msg.isRead}
+              showAvatar={showAvatar}
+              sender={msgSender}
+              pet={msgPet}
+            />
+          );
+        })}
         <div ref={bottomRef} />
       </div>
 

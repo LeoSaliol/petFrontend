@@ -107,7 +107,7 @@ export const Chat = () => {
             />
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-x-hidden overflow-y-hidden">
           {isLoadingConversations ? (
             <div className="flex items-center justify-center py-8">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-transparent" />

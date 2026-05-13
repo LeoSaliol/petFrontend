@@ -1,5 +1,5 @@
 import { useContext, useCallback, useEffect, useRef, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { Conversation, Message } from "../types";
 import { socket } from "../socket/socket";
 import { conversationsService } from "../api";
@@ -14,23 +14,30 @@ export const useChat = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
   const activeConvIdRef = useRef<number | null>(null);
-  const queryClient = useQueryClient();
+  const seenMessagesRef = useRef<Set<string>>(new Set());
 
   const queryFn = useCallback(async () => {
     return conversationsService.getAll();
   }, []);
 
-  const { data: conversations = [], isLoading } = useQuery({
-    queryKey: ["conversations", userToken],
+  const { data: conversationsData, isLoading } = useQuery({
+    queryKey: ["conversations"],
     queryFn,
     enabled: !!userToken,
   });
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+
+  useEffect(() => {
+    if (conversationsData) {
+      setConversations(conversationsData);
+    }
+  }, [conversationsData]);
 
   const updateConversations = useCallback(
     (updater: (prev: Conversation[] | undefined) => Conversation[] | undefined) => {
-      queryClient.setQueryData(["conversations"], updater);
+      setConversations((prev) => updater(prev) ?? []);
     },
-    [queryClient],
+    [],
   );
 
   useEffect(() => {
@@ -65,22 +72,48 @@ export const useChat = () => {
     });
 
     socket.on("newMessage", (message: Message) => {
+      const isFromMe = message.senderId === userToken;
+      const msgKey = `${message.conversationId}-${message.id}`;
+      const contentKey = `${message.conversationId}-${message.senderId}-${message.content}`;
+      
+      if (seenMessagesRef.current.has(msgKey) || seenMessagesRef.current.has(contentKey)) {
+        if (isFromMe) {
+          seenMessagesRef.current.delete(contentKey);
+        }
+        return;
+      }
+      
+      if (isFromMe) {
+        seenMessagesRef.current.add(msgKey);
+      }
+
       const isActive = activeConvIdRef.current === message.conversationId;
+
       if (isActive) {
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === message.id)) return prev;
+          return [...prev, message];
+        });
+        setActiveConversation((prev) => {
+          if (!prev || prev.id !== message.conversationId) return prev;
+          if (prev.messages.some((m) => m.id === message.id)) return prev;
+          return { ...prev, messages: [message, ...prev.messages] };
+        });
         socket.emit("markAsRead", { conversationId: message.conversationId });
       }
       updateConversations((prev) => {
         if (!prev || !Array.isArray(prev)) return prev ?? [];
-        return prev.map((conv) => {
+        const updated = prev.map((conv) => {
           if (conv.id !== message.conversationId) return conv;
-          const existingMessages = Array.isArray(conv.messages) ? conv.messages : [];
           return {
             ...conv,
-            messages: [message, ...existingMessages],
+            messages: [message, ...(conv.messages || [])],
             unreadCount: isActive ? 0 : (conv.unreadCount || 0) + 1,
           };
         });
+        const targetConv = updated.find((c) => c.id === message.conversationId);
+        if (!targetConv) return updated;
+        return [targetConv, ...updated.filter((c) => c.id !== message.conversationId)];
       });
     });
     socket.on("messageRead", ({ conversationId }: { conversationId: number }) => {
@@ -130,6 +163,7 @@ export const useChat = () => {
   };
   const sendMessage = useCallback((conversationId: number, content: string) => {
     if (!content.trim()) return;
+    
     socket.emit("sendMessage", { conversationId, content });
   }, []);
 

@@ -36,7 +36,7 @@ export const ConversationItem = ({
     <motion.button
       onClick={onClick}
       className={`flex w-full cursor-pointer items-center gap-3 border-r-2 px-4 py-3 text-left transition-colors ${isActive ? "border-formColorDark bg-[#ed6b901a] dark:bg-pink-950/30" : "border-transparent hover:bg-[#ed6b9010] dark:hover:bg-neutral-800/50"} ${conversation.unreadCount > 0 ? "bg-[#ed6b901a] dark:bg-pink-950/30" : ""} `}
-      whileHover={{ scale: 1.02, x: -7 }}
+      whileHover={{ scale: 1.02, x: -8 }}
       whileTap={{ scale: 0.99 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
